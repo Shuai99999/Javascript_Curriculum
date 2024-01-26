@@ -227,3 +227,4 @@ function calcAverage(arr) {
 
 console.log(calcAverage(totals));
 console.log(calcAverage(tips));
+console.log("test github");
