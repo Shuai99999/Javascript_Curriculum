@@ -69,32 +69,62 @@ const game = {
   },
 };
 
-const [players1, players2] = game.players;
+// challenge #1
+// const [players1, players2] = game.players;
 
-console.log(players1);
-console.log(players2);
+// console.log(players1);
+// console.log(players2);
 
-const [gk, ...fieldPlayers] = players1;
-console.log(gk);
-console.log(fieldPlayers);
+// const [gk, ...fieldPlayers] = players1;
+// console.log(gk);
+// console.log(fieldPlayers);
 
-const allPlayers = [...players1, ...players2];
-console.log(allPlayers);
+// const allPlayers = [...players1, ...players2];
+// console.log(allPlayers);
 
-const players1Final = [...players1, 'Thiago', 'Coutinho', 'Perisic'];
-console.log(players1Final);
+// const players1Final = [...players1, 'Thiago', 'Coutinho', 'Perisic'];
+// console.log(players1Final);
 
-const {
-  odds: { team1, x: draw, team2 },
-} = game;
-console.log(team1, draw, team2);
+// const {
+//   odds: { team1, x: draw, team2 },
+// } = game;
+// console.log(team1, draw, team2);
 
-const printGoals = function (...players) {
-  console.log(players);
-  console.log(`${players.length} goals were scored`);
-};
+// const printGoals = function (...players) {
+//   console.log(players);
+//   console.log(`${players.length} goals were scored`);
+// };
 
-printGoals(...game.scored);
+// printGoals(...game.scored);
 
-team1 < team2 && console.log('team1 is more likely to win');
-team1 > team2 && console.log('team2 is more likely to win');
+// team1 < team2 && console.log('team1 is more likely to win');
+// team1 > team2 && console.log('team2 is more likely to win');
+
+// challenge #2
+
+for (const [i, Player] of game.scored.entries()) {
+  console.log(`Goal ${i + 1}: ${Player}`);
+}
+
+const odds = Object.values(game.odds);
+
+let average = 0;
+
+for (const odd of odds) {
+  average += odd;
+}
+
+average /= odds.length;
+
+console.log(average);
+
+for (const [team, odd] of Object.entries(game.odds)) {
+  const teamStr = team === 'x' ? 'draw' : `${game[team]}`;
+  console.log(`Odd of victory ${teamStr}: ${odd}`);
+}
+
+const scorers = {};
+for (const player of game.scored) {
+  scorers[player] ? scorers[player]++ : (scorers[player] = 1);
+}
+console.log(scorers);
