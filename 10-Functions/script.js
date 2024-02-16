@@ -232,4 +232,133 @@ const addVAT2 = addTaxRate(0.23);
 console.log(addVAT2(100));
 console.log(addVAT2(23));
 
+
+///////////////////////////////////////
+// Coding Challenge #1
+
+const poll = {
+  question: 'What is your favourite programming language?',
+  options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
+  // This generates [0, 0, 0, 0]. More in the next section 😃
+  answers: new Array(4).fill(0),
+  registerNewAnswer() {
+    const answer = Number(
+      prompt(`${this.question}\n${this.options.join('\n')}`)
+      );
+      
+    //   // 这段是我写的
+    //   answer === 0 || answer === 1 || answer === 2 || answer === 3
+    //   ? this.answers[answer]++
+    //   : alert('You type wrong number!');
+    //   // console.log(typeof this.answers);
+    //   displayResults(this.answers);
+      
+    //  // 这段是老师写的
+     typeof answer === 'number' &&
+     answer < this.options.length &&
+     this.answers[answer]++;
+     this.displayResults();
+     this.displayResults('string');
+    },
+    displayResults(type = 'array') {
+      if (type === 'array') {
+        console.log(this.answers);
+      } else if (type === 'string') {
+        console.log(`Poll results are ${this.answers.join(', ')}`);
+    }
+  },
+};
+
+document
+.querySelector('.poll')
+.addEventListener('click', poll.registerNewAnswer.bind(poll));
+
+// TEST DATA 1
+poll.displayResults.call({ answers: [5, 2, 3] }, 'string');
+
+// TEST DATA 2
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, 'string');
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] });
+
+
+// Immediately Invoked Function Expression，简称IIFE，其实就是匿名函数，一次性调用
+// 这种函数的存在另一方面也是为了控制变量的范围，在IIFE中的变量出了函数就没法用了，不过在现代JS中，已经很少用这种方式控制variables scope了，基本还是用它来做一次性调用匿名函数的
+(function () {
+  console.log('This will never run again');
+  const isPrivate = 23;
+})();
+
+// 这个结果运行不存在
+// console.log(isPrivate);
+
+// 箭头匿名函数的写法如下
+(() => console.log('This will ALSO never run again'))();
+
+
+// closure
+// 这个特性按照如下例子解释，booker会调用secureBooking中的return这个函数，并且使用passengerCount=0这个变量
+// 按照正常的JS引擎顺序，首先加载secureBooking，然后调用booker，但在调用booker的时候，第一步加载的secureBooking上下文已经消失
+// 按道理就会找不到secureBooking中的passengerCount = 0，但是由于这个closure特性的存在，passengerCount = 0会被带入到booker中
+// 且这个passengerCount = 0的优先级很高，即使此时设置一个外部全局变量const passengerCount = 10，
+// 得到的结果仍然是使用secureBooking上下文变量的passengerCount=0，结果仍然是1，2，3，而不是11，12，13
+const secureBooking = function () {
+  let passengerCount = 0;
+  return function () {
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  };
+};
+
+// 这里测试，不管这个变量等于啥，都会优先使用secureBooking上下文变量的passengerCount=0，结果仍然是1，2，3，而不是11，12，13
+// const passengerCount = 10;
+
+const booker = secureBooking();
+
+// 在这三次调用中，同样的道理，后两次调用都使用前一次执行中的passengerCount值，
+// 虽然前一次booker的上下文已消失，但其passengerCount仍然存在，且其值也被保留，所以结果才会是1，2，3，而非1，1，1
+booker();
+booker();
+booker();
+
+// 通过这个console.dir方法，可以打印出后台过程中涉及到的一些东西，包括scope->closure->passengerCount的值的变化
+console.dir(booker);
+
 */
+
+// closure的更多例子
+// 这里的f必须声明一下，不管让它等于当时都不影响后面结果
+// 例子1
+let f;
+
+const g = function () {
+  const a = 23;
+  f = function () {
+    console.log(a * 2);
+  };
+};
+
+const h = function () {
+  const b = 777;
+  f = function () {
+    console.log(b * 2);
+  };
+};
+
+g();
+f();
+console.dir(f);
+// 这里f被重新分配为777x2了
+h();
+f();
+console.dir(f);
+
+// 例子2
+const boardPassengers = function (n, wait) {
+  const perGroup = n / 3;
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000);
+  console.log(`We will start boarding in ${wait} seconds`);
+};
+boardPassengers(180, 3);
