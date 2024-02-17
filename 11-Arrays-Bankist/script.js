@@ -65,14 +65,6 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
 /////////////////////////////////////////////////
 
 /*
@@ -134,4 +126,51 @@ console.log(arr.at(-1));
 console.log('jonas'.at(0));
 console.log('jonas'.at(-1));
 
-*/
+
+// foreach with array
+// 普通的for循环数组
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+// for (const movement of movements) {
+  // 此时改写为需要带序号的方法
+  for (const [i, movement] of movements.entries()) {
+    if (movement > 0) {
+      console.log(`Movement ${i + 1}: You deposited ${movement}`);
+    } else {
+      console.log(`Movement ${i + 1}: You withdrew ${Math.abs(movement)}`);
+    }
+  }
+  
+  // foreach方法版本
+  // foreach需要一个回调函数跟在它后面，foreach循环出来的每个数组值都作为回调函数的入参，回调函数告诉foreach每次循环具体做什么
+  // 从概念上讲，foreach是high order function
+  // foreach的回调函数可以有三个入参，不管这些入参叫什么名字都无所谓，它们的顺序是固定的，第一个总是循环的具体元素，第二个是序号从0开始，第三个是它的entry形式，可以只设置一个或两个入参都没问题，注意顺序即可
+  // 与for of loop的区别，主要在于，foreach的步骤是无法被进一步拆分的，而for of loop是可以支持continue和break这样的操作
+  console.log('----FOREACH----');
+  movements.forEach(function (mov, i, arr) {
+    if (mov > 0) {
+      console.log(`Movement ${i + 1}: You deposited ${mov}`);
+    } else {
+      console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
+    }
+  });
+  
+  */
+
+// for each with maps and sets
+const currencies = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+currencies.forEach(function (value, key, map) {
+  console.log(`${key}: ${value}`);
+});
+
+const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+console.log(currenciesUnique);
+// 对于map类型来说，它并没有key和index这一说，因此打印出它的key和value是一致的，其实key就相当于是个废的参数
+// 因此在JS中，可以用下划线_来代替这个key的位置，在JS中，下划线代表没有用的参数，throwaway variable，相当于一个入参的占位符
+currenciesUnique.forEach(function (value, _, map) {
+  console.log(`${key}: ${value}`);
+});
