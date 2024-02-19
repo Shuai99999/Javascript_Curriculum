@@ -61,6 +61,29 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// 这里讲到一个好的编程习惯，不要让全局变量满天飞，尽可能把同一逻辑中的变量放在一个函数中，做到作用域隔离
+const displayMovements = function (movements) {
+  // 这里是去掉原有的2行实例html代码
+  containerMovements.innerHTML = '';
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+      <div class="movements__value">${mov}</div>
+    </div>
+    `;
+
+    // 这里的方法就是在指定元素的后面开始，每个for循环一个个插入输入的数组的数字
+    // 如果这里改为beforeend，那么数字效果就会倒置
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+displayMovements(account1.movements);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -155,22 +178,98 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
     }
   });
   
-  */
+  
+  // for each with maps and sets
+  const currencies = new Map([
+    ['USD', 'United States dollar'],
+    ['EUR', 'Euro'],
+    ['GBP', 'Pound sterling'],
+  ]);
+  currencies.forEach(function (value, key, map) {
+    console.log(`${key}: ${value}`);
+  });
+  
+  const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+  console.log(currenciesUnique);
+  // 对于map类型来说，它并没有key和index这一说，因此打印出它的key和value是一致的，其实key就相当于是个废的参数
+  // 因此在JS中，可以用下划线_来代替这个key的位置，在JS中，下划线代表没有用的参数，throwaway variable，相当于一个入参的占位符
+  currenciesUnique.forEach(function (value, _, map) {
+    console.log(`${value}: ${value}`);
+  });
+  
+  
+  ///////////////////////////////////////
+  // Coding Challenge #1
+  
+// Julia and Kate are doing a study on dogs. So each of them asked 5 dog owners about their dog's age, and stored the data into an array (one array for each). For now, they are just interested in knowing whether a dog is an adult or a puppy. A dog is an adult if it is at least 3 years old, and it's a puppy if it's less than 3 years old.
 
-// for each with maps and sets
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-currencies.forEach(function (value, key, map) {
-  console.log(`${key}: ${value}`);
-});
+// Create a function 'checkDogs', which accepts 2 arrays of dog's ages ('dogsJulia' and 'dogsKate'), and does the following things:
 
-const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
-console.log(currenciesUnique);
-// 对于map类型来说，它并没有key和index这一说，因此打印出它的key和value是一致的，其实key就相当于是个废的参数
-// 因此在JS中，可以用下划线_来代替这个key的位置，在JS中，下划线代表没有用的参数，throwaway variable，相当于一个入参的占位符
-currenciesUnique.forEach(function (value, _, map) {
-  console.log(`${key}: ${value}`);
+// 1. Julia found out that the owners of the FIRST and the LAST TWO dogs actually have cats, not dogs! So create a shallow copy of Julia's array, and remove the cat ages from that copied array (because it's a bad practice to mutate function parameters)
+// 2. Create an array with both Julia's (corrected) and Kate's data
+// 3. For each remaining dog, log to the console whether it's an adult ("Dog number 1 is an adult, and is 5 years old") or a puppy ("Dog number 2 is still a puppy 🐶")
+// 4. Run the function for both test datasets
+
+// HINT: Use tools from all lectures in this section so far 😉
+
+// TEST DATA 1: Julia's data [3, 5, 2, 12, 7], Kate's data [4, 1, 15, 8, 3]
+// TEST DATA 2: Julia's data [9, 16, 6, 8, 3], Kate's data [10, 5, 6, 1, 4]
+
+// GOOD LUCK 😀
+
+const checkDogs = function (dogsJuliaCats, dogsKate) {
+  const dogsJulia = dogsJuliaCats.slice(1, -2);
+
+  // const dogs = [...dogsJulia, ...dogsKate];
+  const dogs = dogsJulia.concat(dogsKate);
+
+  dogs.forEach(function (dog, i) {
+    const res =
+      dog >= 3
+        ? `Dog number ${i + 1} is an adult, and is ${dog} years old`
+        : `Dog number ${i + 1} is still a puppy 🐶`;
+    console.log(res);
+  });
+};
+
+// TEST DATA 1
+// const dogsJuliaCats = [3, 5, 2, 12, 7];
+// const dogsKate = [4, 1, 15, 8, 3];
+
+// TEST DATA 2
+const dogsJuliaCats = [9, 16, 6, 8, 3];
+const dogsKate = [10, 5, 6, 1, 4];
+
+checkDogs(dogsJuliaCats, dogsKate);
+
+*/
+
+//  map filter reduce
+// map
+// 相比for再push，MAP是一种更现代的方式
+// map也是有 mov i arr三个入参
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const eurToUsd = 1.1;
+// const movementsUSD = movements.map(function (mov) {
+//   return mov * eurToUsd;
+// });
+
+// 箭头函数的map
+const movementsUSD = movements.map(mov => mov * eurToUsd);
+
+console.log(movements);
+console.log(movementsUSD);
+
+const movementsUSDfor = [];
+for (const mov of movements) movementsUSDfor.push(mov * eurToUsd);
+console.log(movementsUSDfor);
+
+// 将之前的逻辑改为map写法，其在原理上的区别是，for each是一个个分别输出到页面的，map是生成一个新数组，最后一把输出到页面的
+const movementsDescriptions = movements.map((mov, i, arr) => {
+  console.log(
+    `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs({
+      mov,
+    })}`
+  );
 });
