@@ -72,7 +72,7 @@ const displayMovements = function (movements) {
       <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-      <div class="movements__value">${mov}</div>
+      <div class="movements__value">${mov}€</div>
     </div>
     `;
 
@@ -84,6 +84,70 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+
+calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
+
+  const out = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter((int, i, arr) => {
+      // console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+calcDisplaySummary(account1.movements);
+
+// 将用户名转换为首字母并小写
+const createUsernames = function (acs) {
+  accounts.forEach(function (acc) {
+    // 等于直接在acc里新增了一个属性username
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  // 如果button在form中，点击button会自动刷新页面，页次下面打印的LOGIN会一闪而过，因此需要用这个prevent方法，取消掉这个事件本身的默认属性
+  e.preventDefault();
+  // console.log('LOGIN');
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // console.log(currentAccount);
+    // 打印欢迎信息
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+  }
+});
+// console.log(accounts);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -242,10 +306,9 @@ const dogsKate = [10, 5, 6, 1, 4];
 
 checkDogs(dogsJuliaCats, dogsKate);
 
-*/
 
 //  map filter reduce
-// map
+// map方法
 // 相比for再push，MAP是一种更现代的方式
 // map也是有 mov i arr三个入参
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
@@ -268,8 +331,77 @@ console.log(movementsUSDfor);
 // 将之前的逻辑改为map写法，其在原理上的区别是，for each是一个个分别输出到页面的，map是生成一个新数组，最后一把输出到页面的
 const movementsDescriptions = movements.map((mov, i, arr) => {
   console.log(
-    `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs({
-      mov,
-    })}`
+    `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
+      mov
+      )}`
   );
 });
+
+// filter 方法
+// 也是有3个入参mov, i, arr
+const deposits = movements.filter(function (mov, i, arr) {
+  // 这里小技巧，是true则返回，那么就只返回>0的了
+  return mov > 0;
+});
+console.log(movements);
+console.log(deposits);
+
+const depositsFor = [];
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+console.log(depositsFor);
+
+// 箭头函数写法
+const withdrawals = movements.filter(mov => mov < 0);
+console.log(withdrawals);
+
+// reduce 方法
+// reduce像滚雪球一样把一个array里的数据一个个滚到一起
+// 它比其他方法多一个入参，第一位acc就是那个被累计的雪球
+// acc是每一步加起来的，但是到了最后一步acc和最后一个值cur还没相加，所以return应该是acc+cur而不是acc
+// 最后在函数外还有一个起始值需要设置，一般情况下都为0就可以，但是后面也有例子不为0的，需要注意场景
+const balance = movements.reduce(function (acc, cur, i, arr) {
+  console.log(`Iteration ${i}: ${acc}`);
+  return acc + cur;
+}, 0);
+console.log(balance);
+
+// 箭头函数写法
+const balanceArror = movements.reduce((acc, cur) => acc + cur, 0);
+console.log(balanceArror);
+
+// for写法
+let balance2 = 0;
+for (const mov of movements) balance2 += mov;
+console.log(balance2);
+
+// 用reduce查找最大值的函数练习，起始值不要写0，而要用数组的第一个值，因为起始值有可能是负数
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) return acc;
+  else return mov;
+}, movements[0]);
+console.log(max);
+
+// Chaining Method 方法链，叫PIPELINE也挺形象
+// 在chaining method中DEBUG是有点麻烦的，可以在每一步中打印cur和i来观察
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0)
+  .map((mov, i, arr) => {
+    return mov * eurToUsd;
+  })
+  .reduce((acc, mov) => acc + mov, 0);
+  
+  console.log(totalDepositsUSD);
+  
+  
+  // find 方法
+  // 与filter的区别，1.find只返回符合条件的第一个值，而filter返回一个符合条件的数组中的全部值，2.find是返回一个元素，而filter是返回一个数组
+  // 所以find通常是用于查找一个数组中的唯一值
+  const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+  const firstWithdrawal = movements.find(mov => mov < 0);
+console.log(firstWithdrawal);
+
+// 查找符合条件的owner
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+console.log(account);
+
+*/
