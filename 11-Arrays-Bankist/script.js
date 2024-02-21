@@ -82,9 +82,9 @@ const displayMovements = function (movements) {
   });
 };
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
 const calcDisplaySummary = function (acc) {
@@ -122,6 +122,12 @@ const createUsernames = function (acs) {
 };
 createUsernames(accounts);
 
+const updateUI = function (acc) {
+  displayMovements(acc.movements);
+  calcDisplayBalance(acc);
+  calcDisplaySummary(acc);
+};
+
 let currentAccount;
 
 btnLogin.addEventListener('click', function (e) {
@@ -144,10 +150,59 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
-    displayMovements(currentAccount.movements);
-    calcDisplayBalance(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // console.log(amount, receiverAcc);
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance > amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    updateUI(currentAccount);
+    // console.log(amount, receiverAcc, currentAccount);
+  }
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    currentAccount.username === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    // console.log(currentAccount.username, currentAccount.pin);
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = 'Log in to get started';
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
 });
 // console.log(accounts);
 /////////////////////////////////////////////////
@@ -398,7 +453,7 @@ const totalDepositsUSD = movements
   // find 方法
   // 与filter的区别，1.find只返回符合条件的第一个值，而filter返回一个符合条件的数组中的全部值，2.find是返回一个元素，而filter是返回一个数组
   // 所以find通常是用于查找一个数组中的唯一值
-  const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+  
   const firstWithdrawal = movements.find(mov => mov < 0);
 console.log(firstWithdrawal);
 
@@ -407,3 +462,46 @@ const account = accounts.find(acc => acc.owner === 'Jessica Davis');
 console.log(account);
 
 */
+
+// includes和some方法
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+console.log(movements.includes(-130));
+
+// 使用some实现同样的效果
+console.log(movements.some(mov => mov === -130));
+
+// 检查是否有大于0的
+const anyDeposits = movements.some(mov => mov > 0);
+console.log(anyDeposits);
+
+// every方法，只有数组中所有的值都符合，才会返回true，否则返回false
+console.log(movements.every(mov => mov > 0));
+console.log(account4.movements.every(mov => mov > 0));
+
+// Separate callback 把回调函数单独摘出来写的方法
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+
+// flat方法
+// 没有回调函数作为入参了
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat());
+
+// 但是可以传入展开的层数
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arr.flat(2));
+
+// 小需求：获取所有账号的movements并求和，先map再flat最后再reduce
+const overallBalance = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance);
+
+// 用flatmap再实现一次，更简洁，但是需要注意flatmap只能展开一层无法修改，因此如果有多层需要flat，还是需要上一个方法分步写
+const overallBalance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance2);
