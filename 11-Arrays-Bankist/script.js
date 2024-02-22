@@ -62,10 +62,14 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // 这里讲到一个好的编程习惯，不要让全局变量满天飞，尽可能把同一逻辑中的变量放在一个函数中，做到作用域隔离
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // 这里是去掉原有的2行实例html代码
   containerMovements.innerHTML = '';
-  movements.forEach(function (mov, i) {
+
+  // 排序功能，为了不影响原数组，所以通过slice复制一个数组，叫movs
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
     <div class="movements__row">
@@ -203,6 +207,14 @@ btnClose.addEventListener('click', function (e) {
     labelWelcome.textContent = 'Log in to get started';
   }
   inputCloseUsername.value = inputClosePin.value = '';
+});
+
+// 增加一个变量sorted，用来实现点击排序，再点击恢复正常顺序
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 // console.log(accounts);
 /////////////////////////////////////////////////
@@ -461,10 +473,9 @@ console.log(firstWithdrawal);
 const account = accounts.find(acc => acc.owner === 'Jessica Davis');
 console.log(account);
 
-*/
 
 // includes和some方法
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
 console.log(movements.includes(-130));
 
 // 使用some实现同样的效果
@@ -495,13 +506,166 @@ console.log(arr.flat(2));
 
 // 小需求：获取所有账号的movements并求和，先map再flat最后再reduce
 const overallBalance = accounts
-  .map(acc => acc.movements)
-  .flat()
-  .reduce((acc, mov) => acc + mov, 0);
+.map(acc => acc.movements)
+.flat()
+.reduce((acc, mov) => acc + mov, 0);
 console.log(overallBalance);
 
 // 用flatmap再实现一次，更简洁，但是需要注意flatmap只能展开一层无法修改，因此如果有多层需要flat，还是需要上一个方法分步写
 const overallBalance2 = accounts
-  .flatMap(acc => acc.movements)
+.flatMap(acc => acc.movements)
   .reduce((acc, mov) => acc + mov, 0);
-console.log(overallBalance2);
+  console.log(overallBalance2);
+  
+  
+  // sort方法
+  const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+  const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+  console.log(owners.sort());
+  // sort是改变原有数组的
+  console.log(owners);
+  
+// 针对Number的排序
+// Ascending
+// 可以有两个入参，如果a> b则返回一个正数，返回正数则把两个数字调换位置，反之，返回负数代表维持排序，不一定非得是1或-1，任何正负数都行
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+// 箭头函数写法
+movements.sort((a, b) => a - b);
+console.log(movements);
+
+// Descending
+// movements.sort((a, b) => {
+  //   if (a > b) return -1;
+//   if (a < b) return 1;
+// });
+movements.sort((a, b) => b - a);
+console.log(movements);
+
+
+// fill 方法
+// 之前学过的2种创建数组的方法
+const arr = [1, 2, 3, 4, 5, 6, 7];
+const arr2 = new Array(1, 2, 3, 4, 5, 6, 7);
+console.log(arr);
+console.log(arr2);
+
+// 新建一个空数组+fil的方法
+const x = new Array(7);
+console.log(x);
+// map没办法填充空数组
+// console.log(x.map(() => 5));
+
+// fill填充所有位置都为1
+// x.fill(1);
+
+// 将位置3-5填充为1，左闭右开，也就是填充3和4
+x.fill(1, 3, 5);
+console.log(x);
+
+arr.fill(23, 2, 6);
+console.log(arr);
+
+// Array.from 方法
+// 设置长度为7，后面带着的算是一个map回调函数，这里不传入任何入参，仅设置所有值为1
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+
+// from里的map回调函数也可以写入参，第一个传入当前值，第二个传入索引，但在这个例子中第一个值没用，因为新建的这个数组的值本来就是空的，所以这里也可以用一个下划线，作为一个入参的占位符
+// const z = Array.from({ length: 7 }, (cur, i) => i + 1);
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z);
+
+// 小练习，从页面元素里抓出nodelist，转为数组并做计算
+// 把所有的class名为movements__value的元素打包成一个数组
+// const movementsUI = Array.from(document.querySelectorAll('.movements__value'));
+// console.log(movementsUI);
+
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+    );
+    console.log(movementsUI);
+    
+  // 另外一种把所有的class名为movements__value的元素打包成一个数组的方法
+  // const movementsUI2 = [...document.querySelectorAll('.movements__value')];
+  // console.log(movementsUI2);
+});
+
+*/
+
+// 数组方法练习
+// 1.
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((sum, cur) => sum + cur, 0);
+
+console.log(bankDepositSum);
+
+// 2.
+// const numDeposits1000 = accounts
+//   .flatMap(acc => acc.movements)
+//   .filter(mov => mov >= 1000).length;
+// console.log(numDeposits1000);
+
+// 方法2
+// 这里使用的方法是把reduce的累计值入参设置成一个count变量了
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  // .reduce((count, cur) => (cur >= 1000 ? count + 1 : count), 0);
+  // 这里用++count也可以，但是不能用count++ 因为count++是先运算后加，但这样count=0会被迭代入每次的循环，永远为0
+  .reduce((count, cur) => (cur >= 1000 ? ++count : count), 0);
+console.log(numDeposits1000);
+
+// 3.
+// 分别计算存钱和取钱之和;
+// 这里reduce的初始值里定义了一个object，里面分别为存钱和取钱，这样在reduce回调函数中可以分别计算它们
+const sums = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+
+console.log(sums);
+
+// 另外一种写法，直接声明deposits和withdrawals这俩变量了
+const { deposits, withdrawals } = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // 注意这里sums是个object，它有俩属性deposits和withdrawals
+      sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+
+console.log(deposits, withdrawals);
+
+const convertTitleCase = function (title) {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+
+  const exceptions = ['a', 'an', 'and', 'the', 'but', 'or', 'on', 'in', 'with'];
+
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map(word => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
+
+  return capitalize(titleCase);
+  // 貌似返回下面这个也是一样的效果
+  // return titleCase;
+};
+
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('this is a LONG title but not too long'));
+console.log(convertTitleCase('and here is another title with an EXAMPLE'));
