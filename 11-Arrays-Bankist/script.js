@@ -595,12 +595,11 @@ labelBalance.addEventListener('click', function () {
   // console.log(movementsUI2);
 });
 
-*/
 
 // 数组方法练习
 // 1.
 const bankDepositSum = accounts
-  .flatMap(acc => acc.movements)
+.flatMap(acc => acc.movements)
   .filter(mov => mov > 0)
   .reduce((sum, cur) => sum + cur, 0);
 
@@ -615,9 +614,9 @@ console.log(bankDepositSum);
 // 方法2
 // 这里使用的方法是把reduce的累计值入参设置成一个count变量了
 const numDeposits1000 = accounts
-  .flatMap(acc => acc.movements)
-  // .reduce((count, cur) => (cur >= 1000 ? count + 1 : count), 0);
-  // 这里用++count也可以，但是不能用count++ 因为count++是先运算后加，但这样count=0会被迭代入每次的循环，永远为0
+.flatMap(acc => acc.movements)
+// .reduce((count, cur) => (cur >= 1000 ? count + 1 : count), 0);
+// 这里用++count也可以，但是不能用count++ 因为count++是先运算后加，但这样count=0会被迭代入每次的循环，永远为0
   .reduce((count, cur) => (cur >= 1000 ? ++count : count), 0);
 console.log(numDeposits1000);
 
@@ -625,7 +624,7 @@ console.log(numDeposits1000);
 // 分别计算存钱和取钱之和;
 // 这里reduce的初始值里定义了一个object，里面分别为存钱和取钱，这样在reduce回调函数中可以分别计算它们
 const sums = accounts
-  .flatMap(acc => acc.movements)
+.flatMap(acc => acc.movements)
   .reduce(
     (sums, cur) => {
       cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
@@ -638,7 +637,7 @@ console.log(sums);
 
 // 另外一种写法，直接声明deposits和withdrawals这俩变量了
 const { deposits, withdrawals } = accounts
-  .flatMap(acc => acc.movements)
+.flatMap(acc => acc.movements)
   .reduce(
     (sums, cur) => {
       // 注意这里sums是个object，它有俩属性deposits和withdrawals
@@ -647,17 +646,17 @@ const { deposits, withdrawals } = accounts
     },
     { deposits: 0, withdrawals: 0 }
   );
+  
+  console.log(deposits, withdrawals);
 
-console.log(deposits, withdrawals);
-
-const convertTitleCase = function (title) {
-  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const convertTitleCase = function (title) {
+    const capitalize = str => str[0].toUpperCase() + str.slice(1);
 
   const exceptions = ['a', 'an', 'and', 'the', 'but', 'or', 'on', 'in', 'with'];
-
+  
   const titleCase = title
-    .toLowerCase()
-    .split(' ')
+  .toLowerCase()
+  .split(' ')
     .map(word => (exceptions.includes(word) ? word : capitalize(word)))
     .join(' ');
 
@@ -669,3 +668,73 @@ const convertTitleCase = function (title) {
 console.log(convertTitleCase('this is a nice title'));
 console.log(convertTitleCase('this is a LONG title but not too long'));
 console.log(convertTitleCase('and here is another title with an EXAMPLE'));
+
+*/
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog ages to human ages and calculate the average age of the dogs in their study.
+
+Create a function 'calcAverageHumanAge', which accepts an arrays of dog's ages ('ages'), and does the following things in order:
+
+1. Calculate the dog age in human years using the following formula: if the dog is <= 2 years old, humanAge = 2 * dogAge. If the dog is > 2 years old, humanAge = 16 + dogAge * 4.
+2. Exclude all dogs that are less than 18 human years old (which is the same as keeping dogs that are at least 18 years old)
+3. Calculate the average human age of all adult dogs (you should already know from other challenges how we calculate averages 😉)
+4. Run the function for both test datasets
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+
+// const calcAverageHumanAge = function (ages) {
+//   const humanAge = ages
+//     .map(dogAge => (dogAge <= 2 ? 2 * dogAge : 16 + dogAge * 4))
+//     .filter(dogAge => dogAge >= 18)
+//     // 这里引入arr这个默认的第四个入参，是为了后面计算length用，i没用就没用吧，放那
+//     // 另外这里dogAge + cur不能加括号，不知道为什么
+//     .reduce((dogAge, cur, i, arr) => dogAge + cur / arr.length, 0);
+
+//   return humanAge;
+// };
+// // TEST DATA 1:
+// const testData1 = [5, 2, 4, 1, 15, 8, 3];
+// console.log(calcAverageHumanAge(testData1));
+
+// // TEST DATA 2:
+// const testData2 = [16, 6, 10, 5, 6, 1, 4];
+// console.log(calcAverageHumanAge(testData2));
+
+///////////////////////////////////////
+// Coding Challenge #4
+
+/* 
+Julia and Kate are still studying dogs, and this time they are studying if dogs are eating too much or too little.
+Eating too much means the dog's current food portion is larger than the recommended portion, and eating too little is the opposite.
+Eating an okay amount means the dog's current food portion is within a range 10% above and 10% below the recommended portion (see hint).
+
+1. Loop over the array containing dog objects, and for each dog, calculate the recommended food portion and add it to the object as a new property. Do NOT create a new array, simply loop over the array. Forumla: recommendedFood = weight ** 0.75 * 28. (The result is in grams of food, and the weight needs to be in kg)
+2. Find Sarah's dog and log to the console whether it's eating too much or too little. HINT: Some dogs have multiple owners, so you first need to find Sarah in the owners array, and so this one is a bit tricky (on purpose) 🤓
+3. Create an array containing all owners of dogs who eat too much ('ownersEatTooMuch') and an array with all owners of dogs who eat too little ('ownersEatTooLittle').
+4. Log a string to the console for each array created in 3., like this: "Matilda and Alice and Bob's dogs eat too much!" and "Sarah and John and Michael's dogs eat too little!"
+5. Log to the console whether there is any dog eating EXACTLY the amount of food that is recommended (just true or false)
+6. Log to the console whether there is any dog eating an OKAY amount of food (just true or false)
+7. Create an array containing the dogs that are eating an OKAY amount of food (try to reuse the condition used in 6.)
+8. Create a shallow copy of the dogs array and sort it by recommended food portion in an ascending order (keep in mind that the portions are inside the array's objects)
+
+HINT 1: Use many different tools to solve these challenges, you can use the summary lecture to choose between them 😉
+HINT 2: Being within a range 10% above and below the recommended portion means: current > (recommended * 0.90) && current < (recommended * 1.10). Basically, the current portion should be between 90% and 110% of the recommended portion.
+
+TEST DATA:
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] }
+];
+
+GOOD LUCK 😀
+*/
