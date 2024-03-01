@@ -738,3 +738,31 @@ const dogs = [
 
 GOOD LUCK 😀
 */
+
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] },
+];
+
+dogs.map(dog => (dog.heathyFood = dog.weight ** 0.75 * 28));
+
+dogs.map(
+  dog =>
+    (dog.isHealthy =
+      dog.curFood >= dog.heathyFood * 0.9 &&
+      dog.curFood <= dog.heathyFood * 1.1)
+);
+
+console.log(dogs);
+
+dogs.map(dog =>
+  dog.owners.find(owner => owner === 'Sarah')
+    ? !dog.isHealthy
+      ? dog.curFood < dog.heathyFood * 0.9
+        ? console.log("Sarah's dog is eating too little")
+        : console.log("Sarah's dog is eating too much")
+      : console.log("Sarah's dog is eating healthy")
+    : null
+);
