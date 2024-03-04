@@ -746,7 +746,7 @@ const dogs = [
   { weight: 32, curFood: 340, owners: ['Michael'] },
 ];
 
-dogs.map(dog => (dog.heathyFood = dog.weight ** 0.75 * 28));
+dogs.map(dog => (dog.heathyFood = Math.trunc(dog.weight ** 0.75 * 28)));
 
 dogs.map(
   dog =>
@@ -766,3 +766,31 @@ dogs.map(dog =>
       : console.log("Sarah's dog is eating healthy")
     : null
 );
+
+const ownersEatTooMuch = dogs
+  .filter(dog => dog.curFood > dog.heathyFood * 1.1)
+  .flatMap(dog => dog.owners);
+
+const ownersEatTooLittle = dogs
+  .filter(dog => dog.curFood < dog.heathyFood * 0.9)
+  .flatMap(dog => dog.owners);
+
+console.log(ownersEatTooMuch);
+console.log();
+
+console.log(`${ownersEatTooMuch.join(' and ')}'s dogs eat too much!`);
+console.log(`${ownersEatTooLittle.join(' and ')}'s dogs eat too little!`);
+
+const checkEatingOkay = dog =>
+  dog.curFood >= dog.heathyFood * 0.9 && dog.curFood <= dog.heathyFood * 1.1;
+
+// 用到了前面教程中提到的把回调函数单独摘出来写在前面，后面在some和filter直接复用的方法
+console.log(dogs.some(checkEatingOkay));
+console.log(dogs.filter(checkEatingOkay));
+
+const dogsSorted = dogs.slice().sort((a, b) => a.heathyFood - b.heathyFood);
+console.log(dogsSorted);
+
+// join方法忘记用了
+// filter方法忘记有单独写函数的方式了
+// sort方法的入参理解的不好
