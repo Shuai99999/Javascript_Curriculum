@@ -21,9 +21,9 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2024-03-05T17:01:17.194Z',
+    '2024-03-09T23:36:17.929Z',
+    '2024-03-11T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -81,6 +81,25 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
+const formatMovementDate = function (date, locale) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // // 月份是从0开始的 所以要+1
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // const displayDate = `${day}/${month}/${year}`;
+  // return displayDate;
+  // 以下使用国际化日期格式
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -92,12 +111,7 @@ const displayMovements = function (acc, sort = false) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(acc.movementsDates[i]);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    // 月份是从0开始的 所以要+1
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
-
+    const displayDate = formatMovementDate(date, acc.locale);
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
@@ -187,7 +201,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
+  // console.log(currentAccount);
 
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     // Display UI and message
@@ -197,14 +211,32 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.opacity = 100;
 
     const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    // 月份是从0开始的 所以要+1
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // // 月份是从0开始的 所以要+1
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = now.getFullYear();
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
 
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+    // 下面是国际化显示日期的方法，有了下面这个方法就不需要上面的方法了
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      // weekday: 'long',
+    };
+
+    // 从浏览器中取地区的方法
+    // const locale = navigator.language;
+    // console.log(locale);
+
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
 
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -452,4 +484,34 @@ console.log(Date.now());
 future.setFullYear(2040);
 console.log(future);
 
+
+// 计算两日期之间的天数
+const future = new Date(2037, 10, 19, 15, 23);
+console.log(Number(future));
+console.log(+future);
+
+const calcDaysPassed = (date1, date2) =>
+Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
+
+const days1 = calcDaysPassed(new Date(2037, 3, 4), new Date(2037, 3, 14));
+console.log(days1);
+
 */
+
+// 数字国际化
+const num = 3884764.23;
+
+const options = {
+  // style: 'unit',
+  // style: 'percent',
+  style: 'currency',
+  // unit: 'mile-per-hour',
+  // unit: 'celsius',
+  currency: 'EUR',
+  // 加下面这个就不是科学技术法了
+  // useGrouping: false,
+};
+
+console.log('US     :', new Intl.NumberFormat('en-US', options).format(num));
+console.log('Germany:', new Intl.NumberFormat('de-DE', options).format(num));
+console.log('Syria  :', new Intl.NumberFormat('ar-SY', options).format(num));
