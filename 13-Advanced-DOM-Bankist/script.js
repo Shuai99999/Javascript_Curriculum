@@ -90,6 +90,120 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
+// 第二个功能，实现tab框
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+// 性能优化知识点：这里虽然能够实现遍历所有的tabs，但是如果此时页面tabs数量较多例如几百个，这种方式会拖慢页面的性能
+// tabs.forEach(t => t.addEventListener('click', () => console.log('TAB')));
+
+// 正确的做法是选择父节点container然后利用bubbling原理，给父节点加个事件，那么操作子节点自然会反馈到父节点身上，而我们的函数只是作用在父节点上的，因此性能比直接循环子节点要好很多
+tabsContainer.addEventListener('click', function (e) {
+  // 由于2和3被隐藏，直接点击e.target只能返回span元素，所以还要继续获取它们的父节点元素e.target.parentElement
+  // 但是1的父元素又跟2 3不一样，所以正确的解决方法应该是closest，因为closest可以找到最近的名字为xxx的父元素
+  const clicked = e.target.closest('.operations__tab');
+  // console.log(clicked);
+
+  // 这里加一句Guard clause 保护语句，当鼠标点击在container的其他部分有可能返回结果为空，例如p标签上，后台会报错
+  // 为了屏蔽掉这个错误，加这么一句，返回父元素为空的地方立即return结束这个函数
+  if (!clicked) return;
+
+  // 在每次点击之前，先确保所有的框框都是inactive的
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  clicked.classList.add('operations__tab--active');
+
+  // 上面把标签弄好了，接下来调整内容区域
+  // 这里利用之前学过的dataset原理，取标签对应的123，即对应内容区域class里的名字里的123
+  // console.log(clicked.dataset.tab);
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
+// 第三个功能，导航栏的渐渐淡出(fade)效果
+const nav = document.querySelector('.nav');
+// 这里使用mouseover，其与mousenter最大的区别是，mouseover能够利用bubbling特性
+// 最初的写法，有大量的重复代码
+// nav.addEventListener('mouseover', function (e) {
+//   if (e.target.classList.contains('nav__link')) {
+//     const link = e.target;
+//     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+//     const logo = link.closest('.nav').querySelector('img');
+
+//     siblings.forEach(el => {
+//       if (el !== link) el.style.opacity = 0.5;
+//     });
+//     logo.style.opacity = 0.5;
+//   }
+// });
+
+// nav.addEventListener('mouseout', function (e) {
+//   if (e.target.classList.contains('nav__link')) {
+//     const link = e.target;
+//     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+//     const logo = link.closest('.nav').querySelector('img');
+
+//     siblings.forEach(el => {
+//       if (el !== link) el.style.opacity = 1;
+//     });
+//     logo.style.opacity = 1;
+//   }
+// });
+
+// 改版1，让代码更dry一些
+// const handleHover = function (e, opacity) {
+//   if (e.target.classList.contains('nav__link')) {
+//     const link = e.target;
+//     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+//     const logo = link.closest('.nav').querySelector('img');
+
+//     siblings.forEach(el => {
+//       if (el !== link) el.style.opacity = opacity;
+//     });
+//     logo.style.opacity = opacity;
+//   }
+// };
+
+// 这里不能直接传入handleHover(e, 0.5)，因为代码不认识e
+// nav.addEventListener('mouseover', handleHover(e, 0.5));
+// nav.addEventListener('mouseout', handleHover(e, 1));
+
+// 而应该传入一个function
+// nav.addEventListener('mouseover', function (e) {
+//   handleHover(e, 0.5);
+// });
+// nav.addEventListener('mouseout', function (e) {
+//   handleHover(e, 1);
+// });
+
+// 改版2，引入bind，复习：bind，call，apply这仨作用是复制一个函数的功能，但改变其上下文，简而言之就是改变它里面的this的指向
+// 此时不需要设置opacity这个入参了，直接让this传进去，这种情况下入参就是这个事件本身
+// 这样用bind方法改写后，如果给addEventListener的第二个入参这个函数想传入多个值就可以用数组的形式
+// 这对于handleHover只能传入一个值的情况是一种解决思路
+const handleHover = function (e) {
+  // 这个e就是addEventListener的event，注意只有这种页面操作的函数有event，你自己手写一个函数是没有event的（undefined）
+  // e.target是事件触发的元素，而e.currentTarget标识是当事件沿着 DOM 触发时事件的当前目标
+  // console.log(this, e.target, e.currentTarget);
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+// 这里的0.5和1看似是一个入参，其实不是入参，而是传入的上下文this，这时候handleHover是无法传入参数的
+// 这个handleHover它只需要一个入参e，就老老实实用原函数默认写的e
+// 而handleHover在上下文已经变成addEventListener的了，所以它的e也就是addEventListener的e
+// 因此后续e.target, e.currentTarget就是鼠标悬停的对象
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+
 /*
 // Lectures
 console.log(document.documentElement);
@@ -240,5 +354,46 @@ document.querySelector('.nav').addEventListener(
   }
   // true
 );
+
+
+// 遍历DOM对象
+const h1 = document.querySelector('h1');
+
+// 向下遍历子节点
+// 这种以前就知道的方法，就可以列出h1的子节点中class为highlight的
+console.log(h1.querySelectorAll('.highlight'));
+// 下面是新方法
+// 列出所有类型的子节点
+console.log(h1.childNodes);
+// 仅列出HTML类型的子节点
+console.log(h1.children);
+// 选中并修改第一个和最后一个元素的颜色
+h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered';
+
+// 向上遍历父节点
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+// 选择离h1最近的class名为header的元素，并改背景颜色
+// 与querySelector或querySelectorAll不同，closest是向上找父节点
+h1.closest('.header').style.background = 'var(--gradient-secondary)';
+h1.closest('h1').style.background = 'var(--gradient-primary)';
+
+// 查找同级别元素 sibling元素
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+// 这两种方式是直接返回text类型的结果，但不常用，基本还是用上面两个方法
+console.log(h1.previousSibling);
+console.log(h1.nextSibling);
+
+// 如果想获取同级别所有元素，则先获取父元素的位置，再获取该父元素的所有子元素
+console.log(h1.parentElement.children);
+// 这个结果是一个数组，遍历这个数组并做处理
+[...h1.parentElement.children].forEach(function (el) {
+  // scale(0.5)是将该元素缩小50%
+  if (el !== h1) el.style.transform = 'scale(0.5)';
+});
 
 */
