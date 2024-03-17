@@ -204,6 +204,120 @@ const handleHover = function (e) {
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
 
+// 第四个功能，让导航栏始终在页面顶端，不管页面怎么划动，sticky navigation
+// 这个事件在window中，而不是document了，只要划动页面，就会触发后面的function
+// 这个特性的性能不怎么好，所以尽量避免使用它
+// 下面这个是笨方法的部分演示，就不完整的学它的代码了
+// window.addEventListener('scroll', function (e) {
+// console.log(e);
+// scrollY是划动的位置距离页面顶端的距离
+//   console.log(window.scrollY);
+// });
+
+// 下面是新方法
+// 首先是讲解演示observer
+// 回调函数有2个传入值，entries就是所触发的临界值threshold的一组内容它是个数组，包括了互动的目标、是否互动、比例等
+// observer就是所互动的section1，在这个例子中用不上所以没有具体使用
+// const obsCallback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   });
+// };
+
+// const obsOptions = {
+//   // 这个root是与之前传入的section1要交互的对象，这里传入null就是与viewpoint交互的意思
+//   root: null,
+//   // 这个临界值的意思是，指定的部分（这个例子中是section1）有多少比例的部分与root部分交互，则触发回调函数
+//   // 在这个例子中的意思就是，section1与viewpoint之间交叉10%，则触发打印entry
+//   // threshold: 0.1,
+//   // 设置一个数组，例如2个临界值，那么在触发这两个临界值的时候都会打印entry
+//   threshold: [0, 0.2],
+// };
+
+// 交互观察者需要一个回调函数和一组传入值，传入值是对象类型的
+// 第一步先new一个observer
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// // 第二步使用observe方法，并指定需要监控的对象section1
+// observer.observe(section1);
+
+// 下面是具体实现
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  // console.log(entry);
+  // 这样就是让nav一直锁定在页面顶端
+  // nav.classList.add('sticky');
+  // 这样是有选择性的锁定，只有viewpoint超过header部分才会锁定
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  // 与上面的if有条件锁定对应，加上下面这个，会留白90px提前锁定
+  // 与threshold不同的是，这样设置不管从下往上还是从上往下划，都会向上留白90px
+  // rootMargin: '-90px',
+  // 这样来动态获取nav的高度
+  rootMargin: `-${navHeight}px`,
+});
+
+headerObserver.observe(header);
+
+// 第五个功能，各个section随着划动渐渐清晰可见
+const allSelections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  // console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  // 已经被observer过的对象就不再observe，这样再次划动到已经显示出来的section也不会打印日志了
+  // 这就用到了之前没用到古的observer这个入参;
+  observer.unobserve(entry.target);
+};
+
+const sectionOjserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSelections.forEach(function (section) {
+  sectionOjserver.observe(section);
+  section.classList.add('section--hidden');
+});
+
+// 第六个功能，将原本模糊的图片清晰化显示
+const imgTargets = document.querySelectorAll('img[data-src]');
+console.log(imgTargets);
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) return;
+  entry.target.src = entry.target.dataset.src;
+  // 下面这句直接写性能不好，因为图片还没加载完就触发了remove
+  // entry.target.classList.remove('lazy-img');
+  // 因为整个页面全部加载完后会自动放出一个load事件，因此监听这个load事件，当图片在上一步被设置为清晰的src后待图片下载完再触发remove动作，避免不必要的JS动作
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  // 加下面这个是为了提前200像素就把图像清晰化
+  rootMargin: '200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
 /*
 // Lectures
 console.log(document.documentElement);
