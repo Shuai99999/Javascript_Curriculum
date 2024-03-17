@@ -288,7 +288,7 @@ const sectionOjserver = new IntersectionObserver(revealSection, {
 
 allSelections.forEach(function (section) {
   sectionOjserver.observe(section);
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
 });
 
 // 第六个功能，将原本模糊的图片清晰化显示
@@ -301,11 +301,15 @@ const loadImg = function (entries, observer) {
 
   if (!entry.isIntersecting) return;
   entry.target.src = entry.target.dataset.src;
+  console.log('load pic');
   // 下面这句直接写性能不好，因为图片还没加载完就触发了remove
   // entry.target.classList.remove('lazy-img');
+  // console.log('remove');
   // 因为整个页面全部加载完后会自动放出一个load事件，因此监听这个load事件，当图片在上一步被设置为清晰的src后待图片下载完再触发remove动作，避免不必要的JS动作
   entry.target.addEventListener('load', function () {
+    console.log('before');
     entry.target.classList.remove('lazy-img');
+    console.log('after');
   });
   observer.unobserve(entry.target);
 };
@@ -318,6 +322,49 @@ const imgObserver = new IntersectionObserver(loadImg, {
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
+
+// 第七个功能，轮播图
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+
+let curSlide = 0;
+const maxSlide = slides.length;
+
+const slider = document.querySelector('.slider');
+// slider.style.transform = 'scale(0.4) translateX(-800px)';
+// slider.style.overflow = 'visible';
+
+const goToSlide = function (slide) {
+  slides.forEach(
+    (s, i) => (s.style.transform = `translateX(${100 * (i - curSlide)}%)`)
+  );
+};
+
+goToSlide(0);
+
+const nextSlide = function () {
+  if (curSlide === maxSlide - 1) {
+    curSlide = 0;
+  } else {
+    curSlide++;
+  }
+
+  goToSlide(curSlide);
+};
+
+const prevSlide = function () {
+  if (curSlide === 0) {
+    curSlide = maxSlide - 1;
+  } else {
+    curSlide--;
+  }
+
+  goToSlide(curSlide);
+};
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
 /*
 // Lectures
 console.log(document.documentElement);
