@@ -126,9 +126,20 @@ class PersonCl {
   calcAge() {
     console.log(2037 - this.birthYear);
   }
+
+  greet() {
+    console.log(`Hey ${this.firstName}`);
+  }
 }
 
 const jessica = new PersonCl('Jessica', 1996);
 
 console.log(jessica);
+jessica.calcAge();
 console.log(jessica.__proto__ === PersonCl.prototype);
+jessica.greet();
+
+// 说明：
+// 1. Classes are Not hoisted 意思是 不能在定义前就使用它，不像函数那样，可以先使用而后在代码中定义
+// 2. Classes are first-class citizens 这是之前学过的概念，意思是class可以作为函数入参和函数返回值，它本质上也是一种特殊的函数
+// 3. Classes are executed in strict mode 即使你不在js文件中写明，所有的class也会自动运行在strict mode下
