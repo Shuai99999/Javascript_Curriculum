@@ -83,3 +83,28 @@ console.dir(h1);
 
 // 随便写个函数，打印它的dir，可以看到与函数有关的各种方法和原型，例如apply bind call
 console.dir(x => x + 1);
+
+// Chanllenge #1
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  return (this.speed += 10);
+};
+
+Car.prototype.brake = function () {
+  return (this.speed -= 5);
+};
+
+const car1 = new Car('BMW', 120);
+const car2 = new Car('Mercedes', 95);
+
+console.log(car1);
+console.log(car1.accelerate());
+console.log(car1.brake());
+
+console.log(car2);
+console.log(car2.brake());
