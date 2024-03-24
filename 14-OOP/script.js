@@ -1,5 +1,6 @@
 'use strict';
 
+/*
 // 写构造函数不能用箭头函数，只能用常规函数或函数表达式，因为箭头函数没有this关键字，而这里构造函数需要用到this关键字
 // 不要在构造函数中创建函数，否则如果以它为原型的对象太多的话，每个函数都会被复制一份，性能会很差
 const Person = function (firstName, birthYear) {
@@ -108,3 +109,26 @@ console.log(car1.brake());
 
 console.log(car2);
 console.log(car2.brake());
+
+*/
+
+// ES6的class写法
+// 两种写法都可以，在JS中，class本质上就是一种特殊的function
+// const PersonCl = class {};
+
+// 写法2
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+  // class内的函数应写在constructor以外
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+}
+
+const jessica = new PersonCl('Jessica', 1996);
+
+console.log(jessica);
+console.log(jessica.__proto__ === PersonCl.prototype);
