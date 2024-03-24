@@ -1,5 +1,6 @@
 'use strict';
 
+/*
 // 写构造函数不能用箭头函数，只能用常规函数或函数表达式，因为箭头函数没有this关键字，而这里构造函数需要用到this关键字
 // 不要在构造函数中创建函数，否则如果以它为原型的对象太多的话，每个函数都会被复制一份，性能会很差
 const Person = function (firstName, birthYear) {
@@ -83,3 +84,62 @@ console.dir(h1);
 
 // 随便写个函数，打印它的dir，可以看到与函数有关的各种方法和原型，例如apply bind call
 console.dir(x => x + 1);
+
+// Chanllenge #1
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  return (this.speed += 10);
+};
+
+Car.prototype.brake = function () {
+  return (this.speed -= 5);
+};
+
+const car1 = new Car('BMW', 120);
+const car2 = new Car('Mercedes', 95);
+
+console.log(car1);
+console.log(car1.accelerate());
+console.log(car1.brake());
+
+console.log(car2);
+console.log(car2.brake());
+
+*/
+
+// ES6的class写法
+// 两种写法都可以，在JS中，class本质上就是一种特殊的function
+// const PersonCl = class {};
+
+// 写法2
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+  // class内的函数应写在constructor以外
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+
+  greet() {
+    console.log(`Hey ${this.firstName}`);
+  }
+}
+
+const jessica = new PersonCl('Jessica', 1996);
+
+console.log(jessica);
+jessica.calcAge();
+console.log(jessica.__proto__ === PersonCl.prototype);
+jessica.greet();
+
+// 说明：
+// 1. Classes are Not hoisted 意思是 不能在定义前就使用它，不像函数那样，可以先使用而后在代码中定义
+// 2. Classes are first-class citizens 这是之前学过的概念，意思是class可以作为函数入参和函数返回值，它本质上也是一种特殊的函数
+// 3. Classes are executed in strict mode 即使你不在js文件中写明，所有的class也会自动运行在strict mode下
