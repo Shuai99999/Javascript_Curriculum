@@ -23,6 +23,14 @@ console.log(matilda, jack);
 // 查看jonas是否是Person类型的
 console.log(jonas instanceof Person);
 
+Person.hey = function () {
+  console.log('Hey there 🤞');
+};
+
+Person.hey();
+// 这里会报错因为hey不在jonas的原型中
+// jonas.hey();
+
 // prototype
 console.log(Person.prototype);
 
@@ -110,19 +118,18 @@ console.log(car1.brake());
 console.log(car2);
 console.log(car2.brake());
 
-*/
-
 // ES6的class写法
 // 两种写法都可以，在JS中，class本质上就是一种特殊的function
 // const PersonCl = class {};
 
+*/
 // 写法2
 class PersonCl {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
     this.birthYear = birthYear;
   }
-  // class内的函数应写在constructor以外
+  // class内的函数应写在constructor以外，以下方法都会被加入到原型中，等价于之前第26行的方法，也不可以继承，称为Instance methods
   calcAge() {
     console.log(2037 - this.birthYear);
   }
@@ -130,9 +137,31 @@ class PersonCl {
   greet() {
     console.log(`Hey ${this.firstName}`);
   }
+
+  get age() {
+    return 2037 - this.birthYear;
+  }
+  // getter和setter方法有时很有用，这里写了一个检查是否是全名是否包含空格的方法
+  set fullName(name) {
+    console.log(name);
+    // 因为fullName是方法名，_fullName是属性名，如果定义相同的方法和属性名，且还为该属性赋值方法的参数，那么在set方法自动调用时，fullName会一直重复调用直到堆栈溢出
+    // 而下划线开头约定俗成是临时变量名，实际上这里换成什么名字都行
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
+
+  // static方法
+  static hey() {
+    console.log('Hey there 🤞');
+    console.log(this);
+  }
 }
 
-const jessica = new PersonCl('Jessica', 1996);
+const jessica = new PersonCl('Jessica Davis', 1996);
 
 console.log(jessica);
 jessica.calcAge();
@@ -143,3 +172,27 @@ jessica.greet();
 // 1. Classes are Not hoisted 意思是 不能在定义前就使用它，不像函数那样，可以先使用而后在代码中定义
 // 2. Classes are first-class citizens 这是之前学过的概念，意思是class可以作为函数入参和函数返回值，它本质上也是一种特殊的函数
 // 3. Classes are executed in strict mode 即使你不在js文件中写明，所有的class也会自动运行在strict mode下
+
+// getter和setter
+// 这里不写White就报错了，验证上面的setter
+const walter = new PersonCl('Walter White', 1965);
+
+PersonCl.hey();
+
+const account = {
+  owner: 'Jonas',
+  movements: [200, 530, 120, 300],
+
+  get latest() {
+    return this.movements.slice(-1).pop();
+  },
+
+  set latest(mov) {
+    this.movements.push(mov);
+  },
+};
+
+// 调用的时候就像调用一个属性一样，而不是一个方法()
+console.log(account.latest);
+account.latest = 50;
+console.log(account.movements);
