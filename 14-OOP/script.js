@@ -1,8 +1,11 @@
 'use strict';
-
 /*
 // 写构造函数不能用箭头函数，只能用常规函数或函数表达式，因为箭头函数没有this关键字，而这里构造函数需要用到this关键字
 // 不要在构造函数中创建函数，否则如果以它为原型的对象太多的话，每个函数都会被复制一份，性能会很差
+// 如果要定义函数，也是要加this的
+// this.hey = function () {
+//   console.log('Hey there 🤞');
+// };
 const Person = function (firstName, birthYear) {
   this.firstName = firstName;
   this.birthYear = birthYear;
@@ -28,7 +31,7 @@ Person.hey = function () {
 };
 
 Person.hey();
-// 这里会报错因为hey不在jonas的原型中
+// 这里会报错因为hey不在jonas的原型中，如果之前hey方法定义在原型中，就可以正常执行了，当然通过Person.prototype.calcAge这样创建也是可以的
 // jonas.hey();
 
 // prototype
@@ -122,7 +125,6 @@ console.log(car2.brake());
 // 两种写法都可以，在JS中，class本质上就是一种特殊的function
 // const PersonCl = class {};
 
-*/
 // 写法2
 class PersonCl {
   constructor(fullName, birthYear) {
@@ -196,3 +198,28 @@ const account = {
 console.log(account.latest);
 account.latest = 50;
 console.log(account.movements);
+*/
+
+// 写法3，Object.create法，用的不多但要理解
+const PersonProto = {
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+console.log(steven);
+steven.name = 'Steven';
+steven.birthYear = 2002;
+steven.calcAge();
+
+console.log(steven.__proto__ === PersonProto);
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 1979);
+sarah.calcAge();
