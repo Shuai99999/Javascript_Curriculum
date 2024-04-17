@@ -96,7 +96,19 @@ console.dir(h1);
 // 随便写个函数，打印它的dir，可以看到与函数有关的各种方法和原型，例如apply bind call
 console.dir(x => x + 1);
 
-// Chanllenge #1
+///////////////////////////////////////
+// Coding Challenge #1
+
+1. Use a constructor function to implement a Car. A car has a make and a speed property. The speed property is the current speed of the car in km/h;
+2. Implement an 'accelerate' method that will increase the car's speed by 10, and log the new speed to the console;
+3. Implement a 'brake' method that will decrease the car's speed by 5, and log the new speed to the console;
+4. Create 2 car objects and experiment with calling 'accelerate' and 'brake' multiple times on each of them.
+
+DATA CAR 1: 'BMW' going at 120 km/h
+DATA CAR 2: 'Mercedes' going at 95 km/h
+
+GOOD LUCK 😀
+
 
 const Car = function (make, speed) {
   this.make = make;
@@ -198,14 +210,13 @@ const account = {
 console.log(account.latest);
 account.latest = 50;
 console.log(account.movements);
-*/
 
 // 写法3，Object.create法，用的不多但要理解
 const PersonProto = {
   calcAge() {
     console.log(2037 - this.birthYear);
   },
-
+  
   init(firstName, birthYear) {
     this.firstName = firstName;
     this.birthYear = birthYear;
@@ -223,3 +234,162 @@ console.log(steven.__proto__ === PersonProto);
 const sarah = Object.create(PersonProto);
 sarah.init('Sarah', 1979);
 sarah.calcAge();
+
+*/
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+1. Re-create challenge 1, but this time using an ES6 class;
+2. Add a getter called 'speedUS' which returns the current speed in mi/h (divide by 1.6);
+3. Add a setter called 'speedUS' which sets the current speed in mi/h (but converts it to km/h before storing the value, by multiplying the input by 1.6);
+4. Create a new car and experiment with the accelerate and brake methods, and with the getter and setter.
+
+DATA CAR 1: 'Ford' going at 120 km/h
+
+GOOD LUCK 😀
+
+class CarCl {
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+  accelerate() {
+    this.speed += 10;
+    console.log(`${this.make} is going at ${this.speed} km/h`);
+  }
+  
+  brake() {
+    this.speed -= 5;
+    console.log(`${this.make} is going at ${this.speed} km/h`);
+  }
+  
+  get speedUS() {
+    return this.speed / 1.6;
+  }
+  // getter和setter方法有时很有用，这里写了一个检查是否是全名是否包含空格的方法
+  set speedUS(speed) {
+    this.speed = speed * 1.6;
+  }
+}
+
+const ford = new CarCl('Ford', 120);
+console.log(ford.speedUS);
+ford.accelerate();
+ford.accelerate();
+ford.brake();
+ford.speedUS = 50;
+console.log(ford);
+
+
+// class之间的继承
+const Person = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+
+Person.prototype.calcAge = function () {
+  console.log(2037 - this.birthYear);
+};
+
+// 这里如果新建一个student类，那么它有一部分是跟person重复的，应该如何让student成为person的一个子类，从而减少代码量呢？
+// const Student = function (firstName, birthYear, course) {
+//   this.firstName = firstName;
+//   this.birthYear = birthYear;
+//   // 直接把这两行替换为下面这行是不行的，这等于只是普通的调用一个函数，而在普通调用中，this关键字的未定义的，因此在此基础上调用Student会报错
+//   // Person(firstName, birthYear);
+//   this.course = course;
+// };
+
+// 正确的方式应该是这样，手动设置this关键字
+const Student = function (firstName, birthYear, course) {
+  Person.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+// Person的原型应该是Student的原型的原型，因此下面的写法才是对的，因此我们需要Object.create这个方法
+// Student.prototype = Person.prototype;
+Student.prototype = Object.create(Person.prototype);
+
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce();
+
+// 当调用calcAge时，JS会先从mike中找，没有再去Student找，最后从Person找
+mike.calcAge();
+
+console.log(mike.__proto__);
+// 两层原型，就到了Person，可以看到calcAge了
+console.log(mike.__proto__.__proto__);
+
+console.log(mike instanceof Student);
+console.log(mike instanceof Person);
+
+// Student.prototype.constructor = Student;
+// 下面这个打印Student的原型的构造函数，结果默认肯定是Person类，如果加了上面那句强制指定，就变成Student类了
+console.dir(Student.prototype.constructor);
+
+*/
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+1. Use a constructor function to implement an Electric Car (called EV) as a CHILD "class" of Car. Besides a make and current speed, the EV also has the current battery charge in % ('charge' property);
+2. Implement a 'chargeBattery' method which takes an argument 'chargeTo' and sets the battery charge to 'chargeTo';
+3. Implement an 'accelerate' method that will increase the car's speed by 20, and decrease the charge by 1%. Then log a message like this: 'Tesla going at 140 km/h, with a charge of 22%';
+4. Create an electric car object and experiment with calling 'accelerate', 'brake' and 'chargeBattery' (charge to 90%). Notice what happens when you 'accelerate'! HINT: Review the definiton of polymorphism 😉
+
+DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
+
+GOOD LUCK 😀
+*/
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  this.speed += 10;
+  console.log(
+    `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
+  );
+};
+
+Car.prototype.brake = function () {
+  this.speed -= 5;
+  console.log(
+    `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
+  );
+};
+
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
+};
+
+EV.prototype = Object.create(Car.prototype);
+
+EV.prototype.chargeBattery = function (chargeTo) {
+  this.charge = chargeTo;
+};
+
+EV.prototype.accelerate = function () {
+  this.speed += 20;
+  this.charge--;
+  console.log(
+    `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
+  );
+};
+
+const tesla = new EV('Tesla', 120, 23);
+
+tesla.chargeBattery(90);
+console.log(tesla);
+tesla.brake();
+tesla.accelerate();
