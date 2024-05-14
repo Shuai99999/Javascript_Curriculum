@@ -347,7 +347,6 @@ console.dir(Student.prototype.constructor);
 DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
 
 GOOD LUCK 😀
-*/
 
 const Car = function (make, speed) {
   this.make = make;
@@ -358,38 +357,104 @@ Car.prototype.accelerate = function () {
   this.speed += 10;
   console.log(
     `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
-  );
-};
+    );
+  };
+  
+  Car.prototype.brake = function () {
+    this.speed -= 5;
+    console.log(
+      `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
+      );
+    };
+    
+    const EV = function (make, speed, charge) {
+      Car.call(this, make, speed);
+      this.charge = charge;
+    };
+    
+    EV.prototype = Object.create(Car.prototype);
+    
+    EV.prototype.chargeBattery = function (chargeTo) {
+      this.charge = chargeTo;
+    };
+    
+    EV.prototype.accelerate = function () {
+      this.speed += 20;
+      this.charge--;
+      console.log(
+        `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
+        );
+      };
+      
+      const tesla = new EV('Tesla', 120, 23);
+      
+      tesla.chargeBattery(90);
+      console.log(tesla);
+      tesla.brake();
+      tesla.accelerate();
+      
+      */
 
-Car.prototype.brake = function () {
-  this.speed -= 5;
-  console.log(
-    `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
-  );
-};
+// 继承的另外一种写法，不用call调用父类
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+  // class内的函数应写在constructor以外，以下方法都会被加入到原型中，等价于之前第26行的方法，也不可以继承，称为Instance methods
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
 
-const EV = function (make, speed, charge) {
-  Car.call(this, make, speed);
-  this.charge = charge;
-};
+  greet() {
+    console.log(`Hey ${this.firstName}`);
+  }
 
-EV.prototype = Object.create(Car.prototype);
+  get age() {
+    return 2037 - this.birthYear;
+  }
+  // getter和setter方法有时很有用，这里写了一个检查是否是全名是否包含空格的方法
+  set fullName(name) {
+    console.log(name);
+    // 因为fullName是方法名，_fullName是属性名，如果定义相同的方法和属性名，且还为该属性赋值方法的参数，那么在set方法自动调用时，fullName会一直重复调用直到堆栈溢出
+    // 而下划线开头约定俗成是临时变量名，实际上这里换成什么名字都行
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
 
-EV.prototype.chargeBattery = function (chargeTo) {
-  this.charge = chargeTo;
-};
+  get fullName() {
+    return this._fullName;
+  }
 
-EV.prototype.accelerate = function () {
-  this.speed += 20;
-  this.charge--;
-  console.log(
-    `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
-  );
-};
+  // static方法
+  static hey() {
+    console.log('Hey there 🤞');
+    console.log(this);
+  }
+}
 
-const tesla = new EV('Tesla', 120, 23);
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    // 首先调用super，也就是PersonCl，才能调用this关键字
+    super(fullName, birthYear);
+    this.course = course;
+  }
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
+  }
+  // 这里重写了calcAge方法，那么在实际调用时就以子类的这个重写的为准，不会返回父类那个了
+  calcAge() {
+    console.log(
+      `I am ${
+        2037 - this.birthYear
+      } years old, but as a student I feel more like ${
+        2037 - this.birthYear + 10
+      }`
+    );
+  }
+}
 
-tesla.chargeBattery(90);
-console.log(tesla);
-tesla.brake();
-tesla.accelerate();
+const martha = new StudentCl('Matha Jones', 2012, 'Computer Science');
+console.log(martha);
+martha.introduce();
+martha.calcAge();
