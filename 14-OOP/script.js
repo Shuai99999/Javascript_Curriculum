@@ -393,9 +393,8 @@ Car.prototype.accelerate = function () {
       tesla.brake();
       tesla.accelerate();
       
-      */
-
-// 继承的另外一种写法，不用call调用父类
+      
+      // 继承的另外一种写法，不用call调用父类
 class PersonCl {
   constructor(fullName, birthYear) {
     this.fullName = fullName;
@@ -421,11 +420,11 @@ class PersonCl {
     if (name.includes(' ')) this._fullName = name;
     else alert(`${name} is not a full name!`);
   }
-
+  
   get fullName() {
     return this._fullName;
   }
-
+  
   // static方法
   static hey() {
     console.log('Hey there 🤞');
@@ -458,3 +457,36 @@ const martha = new StudentCl('Matha Jones', 2012, 'Computer Science');
 console.log(martha);
 martha.introduce();
 martha.calcAge();
+
+*/
+
+// class之间的继承：Object.create
+const PersonProto = {
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+
+const StudentProto = Object.create(PersonProto);
+
+// StudentProto继承自PersonProto，并改写覆盖原init方法
+StudentProto.init = function (firstName, birthYear, course) {
+  PersonProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+StudentProto.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const jay = Object.create(StudentProto);
+jay.init('Jay', 2010, 'Computer Science');
+jay.introduce();
+jay.calcAge();
