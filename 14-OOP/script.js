@@ -458,7 +458,6 @@ console.log(martha);
 martha.introduce();
 martha.calcAge();
 
-*/
 
 // class之间的继承：Object.create
 const PersonProto = {
@@ -490,3 +489,49 @@ const jay = Object.create(StudentProto);
 jay.init('Jay', 2010, 'Computer Science');
 jay.introduce();
 jay.calcAge();
+
+*/
+
+// Another class example
+class Account {
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.pin = pin;
+    this.movements = [];
+    this.locale = navigator.language;
+
+    console.log(`Thanks for opening an account, ${owner}`);
+  }
+
+  deposit(val) {
+    this.movements.push(val);
+  }
+
+  withdraw(val) {
+    this.deposit(-val);
+  }
+
+  approveLoad(val) {
+    return true;
+  }
+
+  requestLoad(val) {
+    if (this.approveLoad(val)) {
+      this.deposit(val);
+      console.log(`Loan approved`);
+    }
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+
+// 直接调用array的push方法也没问题，但是更好的方式是把deposit和withdraw封装成方法
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoad(1000);
+acc1.approveLoad(1000);
+console.log(acc1);
+console.log(acc1.pin);
