@@ -490,34 +490,38 @@ jay.init('Jay', 2010, 'Computer Science');
 jay.introduce();
 jay.calcAge();
 
-*/
 
-// Another class example
+// Another class example 及其加密，基本的加密就是在变量前加个下划线
 class Account {
   constructor(owner, currency, pin) {
     this.owner = owner;
     this.currency = currency;
-    this.pin = pin;
-    this.movements = [];
+    // 加密的属性
+    this._pin = pin;
+    this._movements = [];
     this.locale = navigator.language;
-
+    
     console.log(`Thanks for opening an account, ${owner}`);
   }
-
-  deposit(val) {
-    this.movements.push(val);
+  
+  getMovements() {
+    return this._movements;
   }
-
+  
+  deposit(val) {
+    this._movements.push(val);
+  }
+  
   withdraw(val) {
     this.deposit(-val);
   }
-
-  approveLoad(val) {
+  
+  _approveLoad(val) {
     return true;
   }
 
   requestLoad(val) {
-    if (this.approveLoad(val)) {
+    if (this._approveLoad(val)) {
       this.deposit(val);
       console.log(`Loan approved`);
     }
@@ -527,11 +531,88 @@ class Account {
 const acc1 = new Account('Jonas', 'EUR', 1111);
 
 // 直接调用array的push方法也没问题，但是更好的方式是把deposit和withdraw封装成方法
-// acc1.movements.push(250);
-// acc1.movements.push(-140);
+// acc1._movements.push(250);
+// acc1._movements.push(-140);
 acc1.deposit(250);
 acc1.withdraw(140);
 acc1.requestLoad(1000);
-acc1.approveLoad(1000);
+// acc1.approveLoad(1000);
+console.log(acc1.getMovements());
 console.log(acc1);
-console.log(acc1.pin);
+// console.log(acc1.pin);
+
+*/
+
+// 高级的加密方式如下，感觉还是不是太高级，因为JS还没有真正的加密技术
+// 除了下面4个类型，它们还有各自的static类型，也就是总共8种类型
+class Account {
+  // 在这些区域不需要const let var等关键字声明变量
+  // 1) Public fields(instances)
+  locale = navigator.language;
+
+  // 2) Private fields
+  #movements = [];
+  #pin;
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    // 加密的属性
+    this.#pin = pin;
+    // this._movements = [];
+    // this.locale = navigator.language;
+
+    console.log(`Thanks for opening an account, ${owner}`);
+  }
+
+  // 3) Pulic methods 我们之前用的方法就是公共方法，没什么新的
+  getMovements() {
+    return this.#movements;
+  }
+
+  deposit(val) {
+    this.#movements.push(val);
+    return this;
+  }
+
+  withdraw(val) {
+    this.deposit(-val);
+    return this;
+  }
+
+  requestLoad(val) {
+    if (this.#approveLoad(val)) {
+      this.deposit(val);
+      console.log(`Loan approved`);
+    }
+    return this;
+  }
+
+  static helper() {
+    console.log('Helper');
+  }
+
+  // 4) Private methods
+  #approveLoad(val) {
+    return true;
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+
+// 直接调用array的push方法也没问题，但是更好的方式是把deposit和withdraw封装成方法
+// acc1._movements.push(250);
+// acc1._movements.push(-140);
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoad(1000);
+// acc1.approveLoad(1000);
+console.log(acc1.getMovements());
+console.log(acc1);
+// static是静态方法，仅能用在类本身上，而不能用在实例上，因此得是Account.helper
+Account.helper();
+// console.log(acc1.pin);
+
+// Chaining method，在每个方法后return this即可，因为this就是一个acc1了，不return就不是acc1类型，也就没法chaining
+acc1.deposit(300).deposit(500).withdraw(35).requestLoad(25000).withdraw(4000);
+console.log(acc1.getMovements());
