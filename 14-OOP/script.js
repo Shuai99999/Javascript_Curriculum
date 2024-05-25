@@ -541,7 +541,6 @@ console.log(acc1.getMovements());
 console.log(acc1);
 // console.log(acc1.pin);
 
-*/
 
 // 高级的加密方式如下，感觉还是不是太高级，因为JS还没有真正的加密技术
 // 除了下面4个类型，它们还有各自的static类型，也就是总共8种类型
@@ -549,11 +548,11 @@ class Account {
   // 在这些区域不需要const let var等关键字声明变量
   // 1) Public fields(instances)
   locale = navigator.language;
-
+  
   // 2) Private fields
   #movements = [];
   #pin;
-
+  
   constructor(owner, currency, pin) {
     this.owner = owner;
     this.currency = currency;
@@ -561,10 +560,10 @@ class Account {
     this.#pin = pin;
     // this._movements = [];
     // this.locale = navigator.language;
-
+    
     console.log(`Thanks for opening an account, ${owner}`);
   }
-
+  
   // 3) Pulic methods 我们之前用的方法就是公共方法，没什么新的
   getMovements() {
     return this.#movements;
@@ -579,7 +578,7 @@ class Account {
     this.deposit(-val);
     return this;
   }
-
+  
   requestLoad(val) {
     if (this.#approveLoad(val)) {
       this.deposit(val);
@@ -587,7 +586,7 @@ class Account {
     }
     return this;
   }
-
+  
   static helper() {
     console.log('Helper');
   }
@@ -616,3 +615,61 @@ Account.helper();
 // Chaining method，在每个方法后return this即可，因为this就是一个acc1了，不return就不是acc1类型，也就没法chaining
 acc1.deposit(300).deposit(500).withdraw(35).requestLoad(25000).withdraw(4000);
 console.log(acc1.getMovements());
+
+*/
+
+///////////////////////////////////////
+// Coding Challenge #4
+
+// 1. Re-create challenge #3, but this time using ES6 classes: create an 'EVCl' child class of the 'CarCl' class
+// 2. Make the 'charge' property private;
+// 3. Implement the ability to chain the 'accelerate' and 'chargeBattery' methods of this class, and also update the 'brake' method in the 'CarCl' class. They experiment with chining!
+
+// DATA CAR 1: 'Rivian' going at 120 km/h, with a charge of 23%
+
+// GOOD LUCK 😀
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  this.speed += 10;
+  console.log(
+    `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
+  );
+};
+
+Car.prototype.brake = function () {
+  this.speed -= 5;
+  console.log(
+    `${this.make} going at ${this.speed} km/h, with a charge of ${this.charge}%`
+  );
+};
+
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
+};
+
+EV.prototype = Object.create(Car.prototype);
+
+EV.prototype.chargeBattery = function (chargeTo) {
+  this.charge = chargeTo;
+};
+
+EV.prototype.accelerate = function () {
+  this.speed += 20;
+  this.charge--;
+  console.log(
+    `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
+  );
+};
+
+const tesla = new EV('Tesla', 120, 23);
+
+tesla.chargeBattery(90);
+console.log(tesla);
+tesla.brake();
+tesla.accelerate();
