@@ -11,6 +11,8 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+let map, mapEvent;
+
 if (navigator.geolocation)
   navigator.geolocation.getCurrentPosition(
     function (position) {
@@ -24,39 +26,57 @@ if (navigator.geolocation)
       // 单引号里的map可以自定义一个字符，但是要与HTML里ID为同样字符的元素对应，例如在这个项目的HTML中也有一个ID叫map的元素，将来地图就会显示在这里
       // L是leaflet基本的namespace（命名空间），在它后面我们可以直接使用map tileLayer marker等方法
       const coords = [latitude, longitude];
-      const map = L.map('map').setView(coords, 13);
+      map = L.map('map').setView(coords, 13);
 
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
       // 用on来监听点击地图，类似于addEventListener
-      map.on('click', function (mapEvent) {
-        console.log(mapEvent);
-        // 这个mapEvent.latlng是通过打印mapEvent观察到的
-        const { lat, lng } = mapEvent.latlng;
-
-        // 下面这些方法的说明具体参照leaflet官方文档，简要说明如下，
-        // addTo就是把指定marker添加到地图上，点几下就是添加几个标记点，
-        // bindPopup是在标记点上加标签，并绑定标签和标记点
-        // popup是设置标签格式，可以调用CSS中的className
-        // setPopupContent设置标签的文字内容
-        L.marker([lat, lng])
-          .addTo(map)
-          .bindPopup(
-            L.popup({
-              maxWidth: 250,
-              minWidth: 100,
-              autoClose: false,
-              closeOnClick: false,
-              className: 'running-popup',
-            })
-          )
-          .setPopupContent('Workout')
-          .openPopup();
+      map.on('click', function (mapE) {
+        mapEvent = mapE;
+        form.classList.remove('hidden');
+        inputDistance.focus();
       });
     },
     function () {
       alert('Could not get your position');
     }
   );
+// 这里submit监听的是回车，因此操作的时候鼠标点击一个地方再点回车就会弹出窗口了，之前不小心写成summit了，一直不好使。。。
+form.addEventListener('submit', function (e) {
+  // 不加这句的话一点击页面会立马刷新
+  e.preventDefault();
+  inputDistance.value =
+    inputDuration.value =
+    inputCadence.value =
+    inputElevation.value =
+      '';
+  // Display marker
+  console.log(mapEvent);
+  // // 这个mapEvent.latlng是通过打印mapEvent观察到的
+  const { lat, lng } = mapEvent.latlng;
+  // 下面这些方法的说明具体参照leaflet官方文档，简要说明如下，
+  // addTo就是把指定marker添加到地图上，点几下就是添加几个标记点，
+  // bindPopup是在标记点上加标签，并绑定标签和标记点
+  // popup是设置标签格式，可以调用CSS中的className
+  // setPopupContent设置标签的文字内容
+  L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup(
+      L.popup({
+        maxWidth: 250,
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: 'running-popup',
+      })
+    )
+    .setPopupContent('Workout')
+    .openPopup();
+});
+// 后面那俩toggle里的类名前不加点儿.  原因是什么来着
+inputType.addEventListener('change', function () {
+  inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+  inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
+});
