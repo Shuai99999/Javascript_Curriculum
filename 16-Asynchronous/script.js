@@ -260,7 +260,6 @@ const lotteryPromise = new Promise(function (resolve, reject) {
 
 lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
 
-*/
 // Promisfying setTimeout
 // 将原本这样写的timeout函数，用primise改写，这样可读性更强一点，不用套一层一层的了
 // setTimeout(() => {
@@ -299,3 +298,181 @@ wait(1)
     console.log('I waited for 4 seconds');
     return wait(1);
   });
+
+  
+  // 将geolocation改写为promise的写法;
+  // promise存在的意义就是为了把复杂的异步给写成同步的样子，可读性更强
+  // navigator.geolocation.getCurrentPosition(
+    //   position => console.log(position),
+//   err => console.error(err)
+// );
+// 因为上一步里的获取位置是被异步调用的，因此会先打印下面的Getting position
+// console.log('Getting position');
+
+// promisfy改写后
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(err)
+    // );
+    // 上面三行可以进一步简化为下面这一行
+    // 因为打印的东西可以在后面的then中体现，而getCurrentPosition的第二个入参默认就是个报错，所以直接传err即可
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+getPosition().then(pos => console.log(pos));
+
+// 把上一个测试题也改写promisfy
+const whereAmI = function () {
+  getPosition()
+  .then(pos => {
+    const { latitude: lat, longitude: lng } = pos.coords;
+    return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+  })
+  .then(function (response) {
+    // console.log(response);
+    if (!response.ok)
+    throw new Error(`Problem with geocoding ${response.status}`);
+  // if (!response.redirected)
+  //   throw new Error(`You are calling too fast! ${response.status}`);
+  return response.json();
+})
+.then(function (data) {
+  if (data.city.includes('Throttled'))
+  throw new Error('You are calling too fast!');
+console.log(`You are in ${data.city}, ${data.country}`);
+return fetch(`https://restcountries.com/v3.1/name/${data.country}`);
+})
+.then(function (response) {
+  if (!response.ok)
+        throw new Error(`Country not found (${response.status})`);
+      return response.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .catch(err => {
+      console.log(err.message);
+    });
+};
+
+btn.addEventListener('click', whereAmI);
+
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+
+// Build the image loading functionality that I just showed you on the screen.
+
+// Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+// PART 1
+// 1. Create a function 'createImage' which receives imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+
+// If this part is too tricky for you, just watch the first part of the solution.
+
+// PART 2
+// 2. Comsume the promise using .then and also add an error handler;
+// 3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+// 4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+// 5. After the second image has loaded, pause execution for 2 seconds again;
+// 6. After the 2 seconds have passed, hide the current image.
+
+// TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+// GOOD LUCK 😀
+
+
+// const getPicture = function (picUrl) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = picUrl;
+//     resolve(fetch(picUrl)).then(images.appendChild(img));
+//   });
+// };
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const imgContainer = document.querySelector('.images');
+
+let currentImg;
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+    
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+createImage('img/img-1.jpg')
+.then(img => {
+  currentImg = img;
+  console.log('Image 1 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-2.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 2 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+  })
+  .catch(err => console.error(err));
+
+  */
+
+// 使用异步await来消费promise
+// 重写whereAmI
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function (country) {
+  // Geolocation
+  const pos = await getPosition();
+  const { latitude: lat, longitude: lng } = pos.coords;
+  // fetch(`https://restcountries.com/v3.1/name/${country}`).then(res =>
+  //   console.log(res)
+  // );
+  // 将上面的写法改写为下面这样，是等价的
+
+  // Reverse geocoding
+  const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
+
+  // Country data
+  const res = await fetch(
+    `https://restcountries.com/v3.1/name/${dataGeo.country}`
+  );
+  const data = await res.json();
+  console.log(data);
+  renderCountry(data[0]);
+};
+
+whereAmI();
+
+// FIRST会被先于上面那一堆东西被打印出来，因为上面的东西是异步的
+console.log('FIRST');
