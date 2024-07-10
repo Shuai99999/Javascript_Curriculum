@@ -87,17 +87,20 @@ const getCountryAndNeighbour = function (country) {
   //     });
   // };
   
-  // 以下为简洁写法，去掉了打印日志并使用箭头函数
-  // AJAX的promise的写法总体更简洁，取代了之前的XMLHpptRequest的open send和后面的addEventListener等大量代码
-  
-  const getJSON = function (url, errorMsg = 'Something went wrong') {
-    // 注意下面这个return，必须加上它，这个函数才相当于是返回一个promise，否则后续调用它的时候会无返回值而报错
-    return fetch(url).then(response => {
-      if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+  */
+
+// 以下为简洁写法，去掉了打印日志并使用箭头函数
+// AJAX的promise的写法总体更简洁，取代了之前的XMLHpptRequest的open send和后面的addEventListener等大量代码
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  // 注意下面这个return，必须加上它，这个函数才相当于是返回一个promise，否则后续调用它的时候会无返回值而报错
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
     return response.json();
   });
 };
 
+/*
 // const getCountryData = function (country) {
   //   // Country 1
   //   fetch(`https://restcountries.com/v3.1/name/${country}`)
@@ -438,41 +441,270 @@ createImage('img/img-1.jpg')
   })
   .catch(err => console.error(err));
 
-  */
-
-// 使用异步await来消费promise
-// 重写whereAmI
-
-const getPosition = function () {
-  return new Promise(function (resolve, reject) {
+  
+  // 使用异步await来消费promise
+  // 重写whereAmI
+  
+  const getPosition = function () {
+    return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 };
 
 const whereAmI = async function (country) {
-  // Geolocation
-  const pos = await getPosition();
-  const { latitude: lat, longitude: lng } = pos.coords;
-  // fetch(`https://restcountries.com/v3.1/name/${country}`).then(res =>
-  //   console.log(res)
-  // );
-  // 将上面的写法改写为下面这样，是等价的
-
-  // Reverse geocoding
-  const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-  const dataGeo = await resGeo.json();
-  console.log(dataGeo);
-
-  // Country data
-  const res = await fetch(
-    `https://restcountries.com/v3.1/name/${dataGeo.country}`
-  );
-  const data = await res.json();
-  console.log(data);
-  renderCountry(data[0]);
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    // fetch(`https://restcountries.com/v3.1/name/${country}`).then(res =>
+    //   console.log(res)
+    // );
+    // 将上面的写法改写为下面这样，是等价的
+    
+    // Reverse geocoding
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    // 实际在我练习的时候，不管成功失败，ok都是true了，只是会在返回值里有一个throttled
+    if (!resGeo.ok) throw new Error('Problem getting location data');
+    
+    const dataGeo = await resGeo.json();
+    console.log(dataGeo);
+    
+    // Country data
+    const res = await fetch(
+      `https://restcountries.com/v3.1/name/${dataGeo.country}`
+      );
+      if (!res.ok) throw new Error('Problem getting country data');
+      
+      const data = await res.json();
+      console.log(data);
+      renderCountry(data[0]);
+      return `You are in ${dataGeo.city}, ${dataGeo.country}`;
+    } catch (err) {
+      console.error(err);
+      renderError(`Something went wrong 🧨🧨 ${err.message}. Try again!`);
+      
+      // Reject promise returned from async function
+      throw err;
+    }
 };
 
-whereAmI();
+console.log('1: Will get location');
+// await里的return，直接这样是打印不出来的，因为await也是返回一个promise
+// const city = whereAmI();
+// console.log(city);
+
+// 正确的方法还是利用then
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} 🧨`))
+//   .finally(() => console.log('3: Finished getting location'));
+
+// 直接这样打印步骤3总是会跑到步骤2前面，因此正确做法应该是把步骤3打到上一步的finally里
+// console.log('3: Finished getting location');
+
+// async的IIFE写法
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message} 🧨`);
+  }
+  console.log('3: Finished getting location');
+})();
 
 // FIRST会被先于上面那一堆东西被打印出来，因为上面的东西是异步的
-console.log('FIRST');
+// console.log('FIRST');
+
+// 捕获异常try catch基本的小例子
+// try {
+  //   let y = 1;
+  //   const x = 2;
+  //   x = 3;
+  // } catch (err) {
+    //   alert(err.message);
+    // }
+    
+    
+    // promise的并行写法
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  // 注意下面这个return，必须加上它，这个函数才相当于是返回一个promise，否则后续调用它的时候会无返回值而报错
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+    return response.json();
+  });
+};
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // 先来个普通串行的
+    // const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v3.1/name/${c3}`);
+    // console.log([data1.capital, data2.capital, data3.capital]);
+
+    // 以下为并行写法
+    // 使用Promise.all这个方法，在这个方法中多个动作同时进行，但如果有一个报错，那么就会返回失败
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+    ]);
+    console.log(data.map(d => d[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('portugal', 'canada', 'tanzania');
+
+
+// 除all外，Promise的另外三个方法
+// 方法1 race
+// 只显示race里执行最快的一个结果
+(async function () {
+  const res = await Promise.race([
+    getJSON(`https://restcountries.com/v3.1/name/italy`),
+    getJSON(`https://restcountries.com/v3.1/name/egypt`),
+    getJSON(`https://restcountries.com/v3.1/name/mexico`),
+  ]);
+  console.log(res[0]);
+})();
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long!'));
+    }, sec);
+  });
+};
+// 设置一个超时函数
+// 如果请求时长超过超时函数，则返回请求太慢的提示
+Promise.race([
+  getJSON(`https://restcountries.com/v3.1/name/tanzania`),
+  timeout(30),
+])
+.then(res => console.log(res[0]))
+.catch(err => console.error(err));
+
+// 方法2 allSettled
+// 与all类似，但是即使遇到错误也不会终止整个方法，而是报出错误后继续执行后面的代码
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+// 与all方法对比效果
+Promise.all([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+// 方法3 any，返回第一个fullfilled结果
+Promise.any([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+  */
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+PART 2
+1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+3. Check out the 'imgs' array in the console! Is it like you expected?
+4. Use a promise combinator function to actually get the images from the array 😉
+5. Add the 'paralell' class to all the images (it has some CSS styles).
+
+TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const imgContainer = document.querySelector('.images');
+
+let currentImg;
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 1 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 2 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.error(err));
+
+const loadNPause = async function () {
+  try {
+    let img = await createImage('img/img-1.jpg');
+    console.log('Image 1 loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    img = await createImage('img/img-2.jpg');
+    console.log('Image 2 loaded');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadNPause();
+
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImage(img));
+    const imgsEl = await Promise.all(imgs);
+    console.log(imgsEl);
+    imgsEl.forEach(img => img.classList.add('parallel'));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
