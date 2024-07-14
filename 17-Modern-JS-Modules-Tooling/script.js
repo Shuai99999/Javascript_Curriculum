@@ -129,8 +129,8 @@ if (module.hot) {
 }
 
 // 另外一种启动parcel的方法是npm run start 其中start是在package.json中手写的start那一行定义的名字
-// 后来又加了build，build的时候需要把json里的这一行去掉才管用，npm build indexedDB.html
-// "main": "clean.js",
+// 后来又加了build，build的时候需要把json里的这一行改为script.js才管用，npm build index.html
+// "main": "clean.js", => "main": "script.js"
 
 // 这一课讲babel转译，将新版本的ES6代码部分转为ES5或更久以前的代码，以便适应旧的浏览器
 // 视频中说parcel会自动使用parcel，但实际现在已经不再默认支持，需要单独安装babel了
