@@ -1,7 +1,9 @@
 // 要想在js里import 记得在html里的script里加上这个 type="module"
 // import icons from '../img/icons.svg';
 import icons from 'url:../img/icons.svg';
-console.log(icons);
+// console.log(icons);
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 const recipeContainer = document.querySelector('.recipe');
 
@@ -18,6 +20,7 @@ const timeout = function (s) {
 ///////////////////////////////////////
 // 9cd3a3cd-b16a-4b02-a726-410bb7383bc6
 
+// 这里是加了一个转菊花的微调器，就是个摆设
 const renderSpinner = function (parentEl) {
   const markup = `
     <div class="spinner">
