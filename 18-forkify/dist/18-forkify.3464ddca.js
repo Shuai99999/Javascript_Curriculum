@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"hAbKD":[function(require,module,exports) {
+})({"4VPge":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -585,6 +585,6 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"j4kuM":[function(require,module,exports) {
 
-},{}]},["hAbKD","j4kuM"], "j4kuM", "parcelRequire3a11")
+},{}]},["4VPge","j4kuM"], "j4kuM", "parcelRequire3a11")
 
 //# sourceMappingURL=18-forkify.3464ddca.js.map
