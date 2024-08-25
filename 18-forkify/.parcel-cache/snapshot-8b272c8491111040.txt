@@ -27,7 +27,7 @@
 62D:\VSCodeProjects\Javascript_Curriculum\18-forkify\.prettierrc133689387334897606 0
 113D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\modules\es.set.symmetric-difference.v2.js133689387415073504 0
 88D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\abortcontroller-polyfill133689387391111372 1
-55D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist133689561446872693 1
+55D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist133690365483603511 1
 95D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\object\assign.js133689387405133942 0
 108D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\transformer-postcss\src\constants.js133689387371245531 0
 135D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\optimizer-svgo\node_modules\css-tree\lib\syntax\node\Comment.js133689387344503298 0
@@ -37,7 +37,7 @@
 79D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\sass\types\util133689387441590877 1
 77D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\picomatch\lib133689387440687794 1
 82D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\msgpackr\unpack.js133689387440021991 0
-77D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\recipeView.js133689561445933621 0
+77D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\recipeView.js133690348171703721 0
 100D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\transformer-babel\src\jsx.js133689387370557270 0
 107D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\stable\dom-exception\constructor.js133689387417186909 0
 96D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\svgo\plugins\removeDimensions.js133689387443101390 0
@@ -115,7 +115,7 @@
 59D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\sass133689387444848806 1
 99D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\internals\engine-is-deno.js133689387413375421 0
 98D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\css-tree\lib\syntax\scope\value.js133689387429984602 0
-71D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\controller.js133689552363292437 0
+71D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\controller.js133690363892420029 0
 105D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\stable\string\virtual\includes.js133689387419208414 0
 70D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\sass\_base.scss133689387444477426 0
 89D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\htmlnano\docs\sidebars.js133689387436301657 0
@@ -133,7 +133,7 @@
 87D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\types\unsafe.js133689387371759483 0
 114D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\htmlnano\lib\modules\collapseBooleanAttributes.mjs133689387436301657 0
 88D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@swc\types\tsconfig.json133689387391111372 0
-71D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\View.js133689387444439576 0
+71D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\View.js133690346178017260 0
 100D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\cosmiconfig\dist\cacheWrapper.js.map133689387426605772 0
 142D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\core\test\fixtures\plugins\node_modules\parcel-transformer-bad-engines133689387341323731 1
 113D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\transformer-svg\test\parseFuncIRI.test.js133689387371759483 0
@@ -200,7 +200,7 @@
 101D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\type-fest\source\set-return-type.d.ts133689387443860654 0
 112D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\lmdb\node_modules\node-addon-api\tools\README.md133689387439075264 0
 100D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\typed-array\to-hex.js133689387405868518 0
-66D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\model.js133689550356443492 0
+66D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\model.js133690365482436955 0
 108D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\csso\node_modules\css-tree\lib\utils\List.js133689387434351551 0
 82D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\lmdb\node-index.js133689387438964781 0
 99D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\type-fest\source\tsconfig-json.d.ts133689387443873455 0
@@ -235,7 +235,7 @@
 67D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\img\logo.png133689387444408916 0
 81D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\paginationView.js133689489539057996 0
 100D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\regexp\constructor.js133689387405305139 0
-78D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\resultsView.js133689387444447447 0
+78D:\VSCodeProjects\Javascript_Curriculum\18-forkify\src\js\views\resultsView.js133690346198362995 0
 102D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\source-map\lib\source-map-generator.js133689387442129643 0
 86D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\mdn-data\l10n\index.js133689387439394414 0
 101D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\async-iterator\find.js133689387404108932 0
@@ -2299,7 +2299,7 @@
 86D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\normalize-path\LICENSE133689387440231867 0
 99D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\typed-array\index.js133689387405808555 0
 102D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\css-tree\cjs\tokenizer\TokenStream.cjs133689387429076927 0
-73D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\logo.726d37a8.png133689554769470621 0
+73D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\logo.726d37a8.png133690348176047704 0
 153D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\optimizer-htmlnano\node_modules\css-tree\lib\syntax\node\PseudoElementSelector.js133689387342706903 0
 110D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\csso\node_modules\css-tree\cjs\lexer\index.cjs133689387432096091 0
 88D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\normalize-path\README.md133689387440241860 0
@@ -2464,7 +2464,7 @@
 131D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\msgpackr-extract\node_modules\.bin\node-gyp-build-optional-packages133689387439465217 0
 144D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\msgpackr-extract\node_modules\.bin\node-gyp-build-optional-packages-optional.ps1133689387439647922 0
 105D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\caniuse-lite\data\features\text-stroke.js133689387399218448 0
-66D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.html133689554769440641 0
+66D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.html133690310144502561 0
 98D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\caniuse-lite\dist\lib\supported.js133689387402893825 0
 81D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\mdn-data\index.js133689387439374444 0
 82D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\js-tokens\index.js133689387436926615 0
@@ -3200,7 +3200,7 @@
 105D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\string\virtual\includes.js133689387405465625 0
 90D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\htmlnano\docs\netlify.toml133689387436245957 0
 102D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\features\array-buffer\index.js133689387407417418 0
-74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.f7626f62.css133689554769440641 0
+74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.f7626f62.css133690348176552994 0
 96D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\symbol\species.js133689387405698615 0
 95D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\htmlnano\docs\package-lock.json133689387436285926 0
 105D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\actual\typed-array\uint8-array.js133689387405898504 0
@@ -4237,7 +4237,7 @@
 84D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\rust\LICENSE133689387347268725 0
 104D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@swc\helpers\_\_async_generator_delegate133689387379921656 1
 101D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\css-tree\cjs\syntax\scope\default.cjs133689387429036950 0
-76D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\favicon.8b2f57bf.png133689554769530597 0
+76D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\favicon.8b2f57bf.png133690348177244468 0
 92D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\full\symbol\index.js133689387412697917 0
 99D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\css-tree\cjs\syntax\scope\index.cjs133689387429036950 0
 84D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@lmdb\lmdb-win32-x64133689387337984086 1
@@ -5639,7 +5639,7 @@
 106D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\caniuse-lite\data\features\rel-noopener.js133689387398296514 0
 108D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\internals\object-get-prototype-of.js133689387413963241 0
 100D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\modules\esnext.map.upsert.js133689387415910873 0
-74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\icons.21bad73c.svg133689554769510591 0
+74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\icons.21bad73c.svg133690348177304435 0
 103D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\modules\esnext.math.f16round.js133689387415920870 0
 101D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\modules\esnext.math.fscale.js133689387415930863 0
 102D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\modules\esnext.math.radians.js133689387415940862 0
@@ -6952,7 +6952,7 @@
 111D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\features\dom-exception\to-string-tag.js133689387407944052 0
 101D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\core\test\PublicAsset.test.js133689387341011258 0
 127D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\@parcel\transformer-js\node_modules\regenerator-runtime\LICENSE133689387371132097 0
-74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\icons.dfd7a6db.svg133689554769440641 0
+74D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\icons.dfd7a6db.svg133690348176672930 0
 108D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\features\dom-collections\for-each.js133689387407928842 0
 105D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\features\dom-collections\index.js133689387407938837 0
 108D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\core-js\features\dom-collections\iterator.js133689387407944052 0
@@ -9691,6 +9691,6 @@
 95D:\VSCodeProjects\Javascript_Curriculum\18-forkify\node_modules\.bin\update-browserslist-db.cmd133689387336055347 0
 82D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\18-forkify.3464ddca.js.map133689387334937585 0
 73D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.62406edb.js133689387335007557 0
-78D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.f7626f62.css.map133689554769530597 0
-73D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.e37f48ea.js133689561446812726 0
-77D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.e37f48ea.js.map133689561446852709 0
+78D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.f7626f62.css.map133690348176622959 0
+73D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.e37f48ea.js133690365483543056 0
+77D:\VSCodeProjects\Javascript_Curriculum\18-forkify\dist\index.e37f48ea.js.map133690365483593031 0
