@@ -3,12 +3,18 @@ import icons from 'url:../../img/icons.svg';
 export default class View {
   _data;
 
-  render(data) {
+  render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
     this._data = data;
     const markup = this._generateMarkup();
+    // 这个render参数是专门为了previewView设置的，仅是想返回bookmark的markup，
+    // 且不需要再继续执行后面的insertAdjacentHTML这些，也就是不需要在这直接把页面渲染好
+    // 因为这里只是为了bookmark中用map把多个bookmark的markup拼起来
+    // 真正的render是在bookmark中生成_generateMarkup后再回来这里的render完成的
+    if (!render) return markup;
+
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
