@@ -1,9 +1,11 @@
 import * as model from './model.js';
+import { MODAL_CLOSE_SEC } from './config.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import BookmarksView from './views/bookmarksView.js';
 import paginationView from './views/paginationView.js';
+import addRecipeView from './views/addRecipeView.js';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { async } from 'regenerator-runtime';
@@ -26,12 +28,16 @@ const controlRecipes = async function () {
     recipeView.renderSpinner();
     // 0) Update results view to mark selected search result
     resultsView.update(model.getSearchResultsPage());
+
+    // 1) Updating bookmarks view
+    // 这个功能可以用来DEBUG，在控制台就会产生DEBUG按钮
+    // debugger;
     BookmarksView.update(model.state.bookmarks);
 
-    // 1) Loading recipe
+    // 2) Loading recipe
     await model.loadRecipe(id);
 
-    // 2) Rendering recipe
+    // 3) Rendering recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
     // recipeView.renderError(`${err} 😣`);
@@ -88,7 +94,7 @@ const controlServings = function (newServings) {
   recipeView.update(model.state.recipe);
 };
 
-const contrlAddBookmark = function () {
+const controlAddBookmark = function () {
   // 1) Add/remove bookmark
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
@@ -101,12 +107,52 @@ const contrlAddBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
+// 下面这段只有加了async和await才能让try catch捕捉到异步错误
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    // Show loading spinner
+    addRecipeView.renderSpinner();
+
+    // Upload the new recipe data
+    await model.uploadRecipe(newRecipe);
+
+    // Render recipe
+    recipeView.render(model.state.recipe);
+
+    // Success message
+    addRecipeView.renderMessage();
+
+    // Render bookmark view
+    bookmarksView.render(model.state.bookmarks);
+
+    // Close form window
+    setTimeout(function () {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
+  } catch (err) {
+    console.error('😂', err);
+    addRecipeView.renderError(err.message);
+  }
+};
+
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
-  recipeView.addHandlerAddBookmark(contrlAddBookmark);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(contrlPagination);
+  addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 
 init();
+
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+};
+// 加载时默认清理掉书签本地化存储的方法
+// clearBookmarks();
