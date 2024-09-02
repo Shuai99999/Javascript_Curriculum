@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"hycaY":[function(require,module,exports) {
+})({"MWpgg":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -2929,7 +2929,7 @@ class RecipeView extends (0, _viewDefault.default) {
 }
 exports.default = new RecipeView();
 
-},{"./View":"5cUXS","url:../../img/icons.svg":"loVOp","fractional":"5ibon","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5cUXS":[function(require,module,exports) {
+},{"./View":"5cUXS","url:../../img/icons.svg":"loVOp","fractional":"hGItc","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5cUXS":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _iconsSvg = require("url:../../img/icons.svg");
@@ -3052,7 +3052,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"5ibon":[function(require,module,exports) {
+},{}],"hGItc":[function(require,module,exports) {
 /*
 fraction.js
 A Javascript fraction library.
@@ -3582,6 +3582,6 @@ class AddRecipeView extends (0, _viewDefault.default) {
 }
 exports.default = new AddRecipeView();
 
-},{"./View":"5cUXS","url:../../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["hycaY","aenu9"], "aenu9", "parcelRequire3a11")
+},{"./View":"5cUXS","url:../../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["MWpgg","aenu9"], "aenu9", "parcelRequire3a11")
 
 //# sourceMappingURL=index.e37f48ea.js.map
