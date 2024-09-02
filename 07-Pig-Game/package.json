@@ -1,0 +1,16 @@
+{
+  "name": "07-pig-game",
+  "version": "1.0.0",
+  "default": "script.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html --dist-dir ./dist"
+  },
+  "keywords": "",
+  "author": "Shuai Gao",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}
